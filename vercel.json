@@ -1,0 +1,7 @@
+{
+  "version": 2,
+  "buildCommand": "echo 'Static deploy'",
+  "outputDirectory": "spatial-code-lab/webflow",
+  "installCommand": "echo 'No install'",
+  "framework": null
+}
