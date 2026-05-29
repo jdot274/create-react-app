@@ -1,0 +1,68 @@
+name: Build Electron App
+
+on:
+  push:
+    branches: [claude/react-2d-3d-interactive-site-XcFbo, main]
+    paths: [site/**]
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+
+      - name: Install dependencies
+        working-directory: site
+        run: npm ci
+
+      - name: Build Vite + Electron (Windows)
+        working-directory: site
+        run: npm run electron:build:win
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Windows installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: React2D3D-Windows
+          path: |
+            site/release/*.exe
+            site/release/*.msi
+          if-no-files-found: warn
+          retention-days: 30
+
+  build-mac:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+
+      - name: Install dependencies
+        working-directory: site
+        run: npm ci
+
+      - name: Build Vite + Electron (macOS)
+        working-directory: site
+        run: npm run electron:build:mac
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload macOS app
+        uses: actions/upload-artifact@v4
+        with:
+          name: React2D3D-macOS
+          path: site/release/*.dmg
+          if-no-files-found: warn
+          retention-days: 30
