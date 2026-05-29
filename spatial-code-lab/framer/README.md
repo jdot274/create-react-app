@@ -21,17 +21,17 @@ Use this URL inside Framer's **Embed** element or as the `src` prop of `EmbedFra
 
 ## Components
 
-| File | Description |
-|------|-------------|
-| `SpatialCodeLab.tsx` | **Full site** — all sections in one component |
-| `HeroSection.tsx` | Hero with animated orb, badge, CTAs |
-| `SplineGallery.tsx` | 6-card Spline scene gallery |
-| `CodePenLab.tsx` | 4-card CodePen grid with CSS demos + iframe slots |
-| `DesignSystem.tsx` | Color palette, type scale, spacing, elevation |
-| `ReactPlayground.tsx` | Toggles, tabs, modal, dashboard |
-| `GlassCard.tsx` | Reusable glassmorphism card |
-| `EmbedFrame.tsx` | Lazy-loading iframe for Spline/CodePen/Figma |
-| `DockNav.tsx` | Floating bottom navigation dock |
+| File                  | Description                                       |
+| --------------------- | ------------------------------------------------- |
+| `SpatialCodeLab.tsx`  | **Full site** — all sections in one component     |
+| `HeroSection.tsx`     | Hero with animated orb, badge, CTAs               |
+| `SplineGallery.tsx`   | 6-card Spline scene gallery                       |
+| `CodePenLab.tsx`      | 4-card CodePen grid with CSS demos + iframe slots |
+| `DesignSystem.tsx`    | Color palette, type scale, spacing, elevation     |
+| `ReactPlayground.tsx` | Toggles, tabs, modal, dashboard                   |
+| `GlassCard.tsx`       | Reusable glassmorphism card                       |
+| `EmbedFrame.tsx`      | Lazy-loading iframe for Spline/CodePen/Figma      |
+| `DockNav.tsx`         | Floating bottom navigation dock                   |
 
 ---
 
@@ -77,7 +77,10 @@ In Framer, use **Custom Code** (Site Settings → Custom Code) to inject:
 
 ```html
 <!-- Spline viewer web component -->
-<script type="module" src="https://unpkg.com/@splinetool/viewer@1.0.82/build/spline-viewer.js"></script>
+<script
+  type="module"
+  src="https://unpkg.com/@splinetool/viewer@1.0.82/build/spline-viewer.js"
+></script>
 ```
 
 Then in any Code Component:
@@ -86,11 +89,11 @@ Then in any Code Component:
 // Render a Spline viewer directly
 export default function SplineEmbed() {
   return (
-    <div style={{ width: "100%", height: 400 }}>
+    <div style={{ width: '100%', height: 400 }}>
       {/* @ts-ignore */}
       <spline-viewer url="https://prod.spline.design/YOUR_SCENE_ID/scene.splinecode" />
     </div>
-  )
+  );
 }
 ```
 
@@ -98,16 +101,16 @@ export default function SplineEmbed() {
 
 ## Design tokens (copy into Framer Variables)
 
-| Token | Value |
-|-------|-------|
-| `--bg-base` | `#070710` |
-| `--blue-500` | `#3b82f6` |
-| `--blue-400` | `#60a5fa` |
-| `--indigo-500` | `#6366f1` |
-| `--cyan-400` | `#22d3ee` |
-| `--purple-400` | `#c084fc` |
-| `--text` | `#f8fafc` |
+| Token          | Value                    |
+| -------------- | ------------------------ |
+| `--bg-base`    | `#070710`                |
+| `--blue-500`   | `#3b82f6`                |
+| `--blue-400`   | `#60a5fa`                |
+| `--indigo-500` | `#6366f1`                |
+| `--cyan-400`   | `#22d3ee`                |
+| `--purple-400` | `#c084fc`                |
+| `--text`       | `#f8fafc`                |
 | `--text-muted` | `rgba(248,250,252,0.55)` |
-| `--border` | `rgba(255,255,255,0.08)` |
-| `--glass` | `rgba(255,255,255,0.04)` |
-| `--blur` | `blur(20px)` |
+| `--border`     | `rgba(255,255,255,0.08)` |
+| `--glass`      | `rgba(255,255,255,0.04)` |
+| `--blur`       | `blur(20px)`             |
