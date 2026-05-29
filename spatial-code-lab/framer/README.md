@@ -1,5 +1,15 @@
 # Spatial Code Lab — Framer Code Components
 
+## Live URL
+
+The full site is deployed and live at:
+
+**`https://raw.githack.com/jdot274/create-react-app/gh-pages/index.html`**
+
+Use this URL inside Framer's **Embed** element or as the `src` prop of `EmbedFrame`.
+
+---
+
 ## How to add to Framer
 
 1. Open your Framer project
@@ -16,6 +26,8 @@
 | `SpatialCodeLab.tsx` | **Full site** — all sections in one component |
 | `HeroSection.tsx` | Hero with animated orb, badge, CTAs |
 | `SplineGallery.tsx` | 6-card Spline scene gallery |
+| `CodePenLab.tsx` | 4-card CodePen grid with CSS demos + iframe slots |
+| `DesignSystem.tsx` | Color palette, type scale, spacing, elevation |
 | `ReactPlayground.tsx` | Toggles, tabs, modal, dashboard |
 | `GlassCard.tsx` | Reusable glassmorphism card |
 | `EmbedFrame.tsx` | Lazy-loading iframe for Spline/CodePen/Figma |
@@ -49,11 +61,11 @@
   height={500}
 />
 
-// Webflow site / component
+// Full Spatial Code Lab site (live deployment)
 <EmbedFrame
-  src="https://your-site.webflow.io/embed/your-page"
+  src="https://raw.githack.com/jdot274/create-react-app/gh-pages/index.html"
   embedType="custom"
-  height={400}
+  height={800}
 />
 ```
 
