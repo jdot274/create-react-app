@@ -255,7 +255,7 @@ function LazyIframe({ src, height }: { src: string; height: number }) {
           obs.disconnect();
         }
       },
-      { threshold: 0.05 },
+      { threshold: 0.05 }
     );
     if (ref.current) obs.observe(ref.current);
     return () => obs.disconnect();

@@ -344,7 +344,9 @@ function NeuralScene() {
             r={5}
             fill="rgba(6,182,212,0.8)"
             style={{
-              animation: `scl-neuralPulse ${1.5 + (i % 3) * 0.5}s ease-in-out infinite`,
+              animation: `scl-neuralPulse ${
+                1.5 + (i % 3) * 0.5
+              }s ease-in-out infinite`,
               animationDelay: `${i * 0.2}s`,
             }}
           />

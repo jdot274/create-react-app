@@ -21,7 +21,7 @@ function useScrollSpy(sectionIds) {
           const found = sectionIds.find(sid => visible[sid]);
           if (found) setActiveId(found);
         },
-        { threshold: 0.25, rootMargin: '-20% 0px -60% 0px' },
+        { threshold: 0.25, rootMargin: '-20% 0px -60% 0px' }
       );
       obs.observe(el);
       observers.push(obs);
@@ -46,7 +46,7 @@ function useInView(ref, threshold = 0.15) {
           obs.disconnect();
         }
       },
-      { threshold },
+      { threshold }
     );
     obs.observe(ref.current);
     return () => obs.disconnect();
@@ -59,7 +59,9 @@ function useInView(ref, threshold = 0.15) {
 function GlassCard({ children, className = '', onClick, glow = false }) {
   return (
     <div
-      className={`glass-card${glow ? ' glow' : ''}${onClick ? ' clickable' : ''} ${className}`}
+      className={`glass-card${glow ? ' glow' : ''}${
+        onClick ? ' clickable' : ''
+      } ${className}`}
       onClick={onClick}
     >
       {children}
@@ -200,7 +202,9 @@ function NeuralScene() {
             stroke="rgba(59,130,246,0.35)"
             strokeWidth="0.5"
             style={{
-              animation: `pulse ${1.5 + i * 0.2}s ease-in-out infinite alternate`,
+              animation: `pulse ${
+                1.5 + i * 0.2
+              }s ease-in-out infinite alternate`,
               animationDelay: `${i * 0.15}s`,
             }}
           />
@@ -457,7 +461,9 @@ function SplineGallery() {
 
         <div
           ref={ref}
-          className={`spline-gallery-grid fade-in-up${inView ? ' in-view' : ''}`}
+          className={`spline-gallery-grid fade-in-up${
+            inView ? ' in-view' : ''
+          }`}
         >
           {SPLINE_CARDS.map((card, i) => (
             <div

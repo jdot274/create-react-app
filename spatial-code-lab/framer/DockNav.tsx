@@ -99,13 +99,13 @@ export default function DockNav({
               background: isActive
                 ? 'rgba(59,130,246,0.18)'
                 : isHovered
-                  ? 'rgba(255,255,255,0.07)'
-                  : 'transparent',
+                ? 'rgba(255,255,255,0.07)'
+                : 'transparent',
               color: isActive
                 ? '#60a5fa'
                 : isHovered
-                  ? '#f8fafc'
-                  : 'rgba(248,250,252,0.38)',
+                ? '#f8fafc'
+                : 'rgba(248,250,252,0.38)',
               fontSize: 11,
               fontWeight: 500,
               cursor: 'pointer',

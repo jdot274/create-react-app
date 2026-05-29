@@ -52,7 +52,7 @@ export default function EmbedFrame({
           obs.disconnect();
         }
       },
-      { threshold: 0.1 },
+      { threshold: 0.1 }
     );
     if (containerRef.current) obs.observe(containerRef.current);
     return () => obs.disconnect();

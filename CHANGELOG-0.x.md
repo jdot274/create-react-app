@@ -7,11 +7,13 @@
 #### :bug: Bug Fix
 
 - `react-scripts`
+
   - [#1783](https://github.com/facebook/create-react-app/pull/1783) **Work around Node 7.7.2 bug that crashes `npm start`.** ([@ryanwalters](https://github.com/ryanwalters))
 
 #### :nail_care: Enhancement
 
 - `eslint-config-react-app`
+
   - [#1773](https://github.com/facebook/create-react-app/pull/1773) Remove `guard-for-in` lint rule. ([@spicyj](https://github.com/spicyj))
 
 - `react-scripts`
@@ -21,11 +23,13 @@
 #### :memo: Documentation
 
 - `react-scripts`
+
   - [#1756](https://github.com/facebook/create-react-app/pull/1756) Add Yarn steps for adding Flow. ([@zertosh](https://github.com/zertosh))
 
 #### :house: Internal
 
 - `babel-preset-react-app`
+
   - [#1742](https://github.com/facebook/create-react-app/pull/1742) Switch to `babel-preset-env` to remove the deprecation warning. ([@Timer](https://github.com/Timer))
 
 #### Committers: 6
@@ -50,6 +54,7 @@ npm install --save-dev --save-exact react-scripts@0.9.5
 #### :bug: Bug Fix
 
 - `create-react-app`
+
   - [#1706](https://github.com/facebook/create-react-app/pull/1706) Extract compressed package for package name. ([@Timer](https://github.com/Timer))
 
     You may now specify a scoped package for `--scripts-version` and obtain a working installation.
@@ -57,6 +62,7 @@ npm install --save-dev --save-exact react-scripts@0.9.5
   - [#1695](https://github.com/facebook/create-react-app/pull/1695) Print why installation was aborted. ([@tgig](https://github.com/tgig))
 
 - `react-scripts`
+
   - [#1727](https://github.com/facebook/create-react-app/pull/1727) Fix ejecting from a scoped fork. ([@gaearon](https://github.com/gaearon))
 
     Ejecting now works within a scoped fork.
@@ -64,6 +70,7 @@ npm install --save-dev --save-exact react-scripts@0.9.5
   - [#1721](https://github.com/facebook/create-react-app/pull/1721) Fix hot reloading for WebpackDevServer after eject. ([@gaearon](https://github.com/gaearon))
 
 - `react-dev-utils`
+
   - [#1690](https://github.com/facebook/create-react-app/pull/1690) Fix `openBrowser()` when `BROWSER=open` on macOS. ([@bpierre](https://github.com/bpierre))
 
   - [#1696](https://github.com/facebook/create-react-app/pull/1696) Improve reliability of port detection. ([@chrisdrackett](https://github.com/chrisdrackett))
@@ -71,6 +78,7 @@ npm install --save-dev --save-exact react-scripts@0.9.5
 #### :nail_care: Enhancement
 
 - `eslint-config-react-app`, `react-scripts`
+
   - [#1705](https://github.com/facebook/create-react-app/pull/1705) Add support for `ignoreRestSiblings` in `no-unused-vars`. ([@chrisdrackett](https://github.com/chrisdrackett))
 
     Linter no longer warns when using rest properties to remove variables from an object.
@@ -78,9 +86,11 @@ npm install --save-dev --save-exact react-scripts@0.9.5
   - [#1542](https://github.com/facebook/create-react-app/pull/1542) Bump `jsx-a11y` version. ([@bondz](https://github.com/bondz))
 
 - `react-dev-utils`, `react-scripts`
+
   - [#1726](https://github.com/facebook/create-react-app/pull/1726) Extract generic build functions into `react-dev-utils`. ([@viankakrisna](https://github.com/viankakrisna))
 
 - Other
+
   - [#1402](https://github.com/facebook/create-react-app/pull/1402) Stub `package.json` for e2e test. ([@matoilic](https://github.com/matoilic))
 
 #### :memo: Documentation
@@ -141,6 +151,7 @@ npm install -g create-react-app@1.3.0
 #### :rocket: New Feature
 
 - `create-react-app`
+
   - [#1423](https://github.com/facebook/create-react-app/pull/1423) **Fall back to Yarn offline cache when creating a new project.** ([@voxsim](https://github.com/voxsim))
 
   If you are using Yarn, and you have created at least one app previously, Create React App now works offline.
@@ -150,6 +161,7 @@ npm install -g create-react-app@1.3.0
 #### :bug: Bug Fix
 
 - `react-scripts`
+
   - [#1665](https://github.com/facebook/create-react-app/pull/1665) Temporarily disable ESLint caching because of a bug. ([@gaearon](https://github.com/gaearon))
 
 - `create-react-app`
@@ -160,16 +172,19 @@ npm install -g create-react-app@1.3.0
 #### :nail_care: Enhancement
 
 - `react-scripts`
+
   - [#1677](https://github.com/facebook/create-react-app/pull/1677) Add `X-FORWARDED` headers for proxy requests. ([@johann-sonntagbauer](https://github.com/johann-sonntagbauer))
 
 #### :memo: Documentation
 
 - `react-scripts`
+
   - [#1657](https://github.com/facebook/create-react-app/pull/1657) Tweak the Visual Studio Code debugging guide. ([@ryansully](https://github.com/ryansully))
 
 #### :house: Internal
 
 - End-to-end Tests
+
   - [#1648](https://github.com/facebook/create-react-app/pull/1648) Add Windows CI tests for better stability. ([@Timer](https://github.com/Timer))
 
 #### Committers: 5
@@ -199,6 +214,7 @@ npm install -g create-react-app@1.2.1
 #### :nail_care: Enhancement
 
 - `create-react-app`
+
   - [#1253](https://github.com/facebook/create-react-app/pull/1253) **Install time optimization.** ([@n3tr](https://github.com/n3tr))
 
     React, ReactDOM, and `react-scripts` are now installed in the same install instead of two different installs. This reduces app creation time by a noticeable amount.
@@ -214,6 +230,7 @@ npm install -g create-react-app@1.2.1
   - [#1570](https://github.com/facebook/create-react-app/pull/1570) Allow git urls in `--scripts-version`. ([@tomconroy](https://github.com/tomconroy))
 
 - `react-scripts`
+
   - [#1578](https://github.com/facebook/create-react-app/pull/1578) Enable lint caching in development. ([@viankakrisna](https://github.com/viankakrisna))
 
   - [#1478](https://github.com/facebook/create-react-app/pull/1478) Update the build script message to show the correct port. ([@chyipin](https://github.com/chyipin))
@@ -225,6 +242,7 @@ npm install -g create-react-app@1.2.1
 #### :bug: Bug Fix
 
 - `react-scripts`
+
   - [#1635](https://github.com/facebook/create-react-app/pull/1635) **Fix Jest configuration.** ([@Timer](https://github.com/Timer))
 
     Fixes ejecting on Windows for macOS and Linux machines.
@@ -342,6 +360,7 @@ Thanks to [@Timer](https://github.com/timer) for cutting this release.
 #### :rocket: New Feature
 
 - `react-scripts`
+
   - [#1489](https://github.com/facebook/create-react-app/pull/1489) Support setting `"homepage"` to `"."` to generate relative asset paths. ([@tibdex](https://github.com/tibdex))
 
     Applications that don’t use the HTML5 `pushState` API can now be built to be served from any relative URL. To enable this, specify `"."` as your `homepage` setting in `package.json`. It used to be possible before with a few known bugs, but they should be fixed now. See [Serving the Same Build from Different Paths](https://github.com/facebook/create-react-app/blob/main/packages/react-scripts/template/README.md#serving-the-same-build-from-different-paths).
@@ -355,6 +374,7 @@ Thanks to [@Timer](https://github.com/timer) for cutting this release.
     This makes all environment variables previously available in JS, also available in the HTML file, for example `%REACT_APP_MY_VARIABLE%`. See [Referencing Environment Variables in HTML](https://github.com/facebook/create-react-app/blob/main/packages/react-scripts/template/README.md#referencing-environment-variables-in-the-html).
 
 - `react-dev-utils`
+
   - [#1148](https://github.com/facebook/create-react-app/pull/1148) Configure which browser to open with `npm start`. ([@GAumala](https://github.com/GAumala))
 
     You can now disable the automatic browser launching by setting the `BROWSER` environment variable to `none`. You can also specify a different browser (or an arbitrary script) to open by default, [as supported by `opn` command](https://github.com/sindresorhus/opn#app) that we use under the hood. See [Advanced Configuration](https://github.com/facebook/create-react-app/blob/main/packages/react-scripts/template/README.md#advanced-configuration).
@@ -362,6 +382,7 @@ Thanks to [@Timer](https://github.com/timer) for cutting this release.
 #### :boom: Breaking Change
 
 - `react-scripts`
+
   - [#1522](https://github.com/facebook/create-react-app/pull/1522) Upgrade dependencies. ([@Timer](https://github.com/Timer))
   - [#1432](https://github.com/facebook/create-react-app/pull/1432) Bump Jest version. ([@gaearon](https://github.com/gaearon))
   - [#1311](https://github.com/facebook/create-react-app/pull/1311) Updated `babel-jest` and `jest` packages to 18.0.0. ([@lopezator](https://github.com/lopezator))
@@ -369,6 +390,7 @@ Thanks to [@Timer](https://github.com/timer) for cutting this release.
     Jest has been updated to 18 and has introduced some [breaking changes and new features](https://facebook.github.io/jest/blog/2016/12/15/2016-in-jest.html).
 
 - `react-scripts`, `react-dev-utils`
+
   - [#1264](https://github.com/facebook/create-react-app/pull/1264) Remove interactive shell check when opening browser on start. ([@CaryLandholt](https://github.com/CaryLandholt))
 
     Non-interactive terminals no longer automatically disable launching of the browser. Instead, you need to [specify `none` as `BROWSER` environment variable](https://github.com/facebook/create-react-app/blob/main/packages/react-scripts/template/README.md#advanced-configuration) if you wish to disable it.
@@ -376,6 +398,7 @@ Thanks to [@Timer](https://github.com/timer) for cutting this release.
 #### :bug: Bug Fix
 
 - `react-scripts`
+
   - [#1441](https://github.com/facebook/create-react-app/pull/1441) Added `babel-runtime` dependency to deduplicate dependencies when using Yarn. ([@jkimbo](https://github.com/jkimbo))
 
     This works around a bug in Yarn that caused newly created projects to be over 400MB. Now they are down to 126MB, just like with npm 3.
@@ -386,6 +409,7 @@ Thanks to [@Timer](https://github.com/timer) for cutting this release.
   - [#1267](https://github.com/facebook/create-react-app/pull/1267) Only gitignore directories in root, not deep. ([@jayphelps](https://github.com/jayphelps))
 
 - `react-dev-utils`
+
   - [#1377](https://github.com/facebook/create-react-app/pull/1377) webpack-dev-server patch for 'still-ok' success status. ([@TheBlackBolt](https://github.com/TheBlackBolt))
   - [#1274](https://github.com/facebook/create-react-app/pull/1274) Downgrading to compatible version of SockJS-Client. ([@holloway](https://github.com/holloway))
   - [#1247](https://github.com/facebook/create-react-app/pull/1247) Only open Chrome tab if BROWSER is missing or is Chrome. ([@gaearon](https://github.com/gaearon))
@@ -393,6 +417,7 @@ Thanks to [@Timer](https://github.com/timer) for cutting this release.
 #### :nail_care: Enhancement
 
 - `react-scripts`
+
   - [#1496](https://github.com/facebook/create-react-app/pull/1496) Make build exit with error code when interrupted. ([@brandones](https://github.com/brandones))
   - [#1352](https://github.com/facebook/create-react-app/pull/1352) More descriptive error message for `env.CI = true` warnings causing failures. ([@jayphelps](https://github.com/jayphelps))
   - [#1264](https://github.com/facebook/create-react-app/pull/1264) Remove interactive shell check when opening browser on start. ([@CaryLandholt](https://github.com/CaryLandholt))
@@ -403,11 +428,13 @@ Thanks to [@Timer](https://github.com/timer) for cutting this release.
   - [#1324](https://github.com/facebook/create-react-app/pull/1324) Use npm script hooks to avoid `&&` in deploy script. ([@zpao](https://github.com/zpao))
 
 - `create-react-app`
+
   - [#1270](https://github.com/facebook/create-react-app/pull/1270) gh-1269: Enabling nested folder paths for project name. ([@dinukadesilva](https://github.com/dinukadesilva))
 
 #### :memo: Documentation
 
 - User Guide
+
   - [#1515](https://github.com/facebook/create-react-app/pull/1515) readme: Advanced Configuration. ([@Timer](https://github.com/Timer))
   - [#1513](https://github.com/facebook/create-react-app/pull/1513) clarifying the use of custom environment variables. ([@calweb](https://github.com/calweb))
   - [#1511](https://github.com/facebook/create-react-app/pull/1511) Change "OS X" references to "macOS". ([@RodrigoHahn](https://github.com/RodrigoHahn))
@@ -424,12 +451,14 @@ Thanks to [@Timer](https://github.com/timer) for cutting this release.
   - [#1384](https://github.com/facebook/create-react-app/pull/1384) Document Flow support. ([@dschep](https://github.com/dschep))
 
 - READMEs
+
   - [#1375](https://github.com/facebook/create-react-app/pull/1375) Change console.log for errors and warnings. ([@jimmyhmiller](https://github.com/jimmyhmiller))
   - [#1369](https://github.com/facebook/create-react-app/pull/1369) Add missing import in react-dev-utils README.md. ([@pedronauck](https://github.com/pedronauck))
 
 #### :house: Internal
 
 - Internal Test Suite
+
   - [#1519](https://github.com/facebook/create-react-app/pull/1519) Add test cases for PUBLIC_URL and relative path. ([@Timer](https://github.com/Timer))
   - [#1484](https://github.com/facebook/create-react-app/pull/1484) Improve e2e-kitchensink and Jest coverage. ([@Timer](https://github.com/Timer))
   - [#1463](https://github.com/facebook/create-react-app/pull/1463) Minor code style and wrong expect. ([@tuchk4](https://github.com/tuchk4))
@@ -437,6 +466,7 @@ Thanks to [@Timer](https://github.com/timer) for cutting this release.
   - [#1187](https://github.com/facebook/create-react-app/pull/1187) Use a more sophisticated template for end-to-end testing.. ([@EnoahNetzach](https://github.com/EnoahNetzach))
 
 - Other
+
   - [#1289](https://github.com/facebook/create-react-app/pull/1289) Remove path-exists from dependencies and replace it with fs.existsSync. ([@halfzebra](https://github.com/halfzebra))
 
 #### Committers: 35
@@ -496,6 +526,7 @@ Thanks to [@fson](https://github.com/fson) for cutting this release.
 #### :bug: Bug Fix
 
 - `create-react-app`, `react-scripts`
+
   - [#1365](https://github.com/facebook/create-react-app/pull/1365) Use yarnpkg alias to run Yarn. ([@fson](https://github.com/fson))
 
     Fixes an issue where running `create-react-app` failed on systems with Apache Hadoop installed because it falsely detected Hadoop YARN executable as Yarn package manager.
@@ -523,11 +554,13 @@ npm install -g create-react-app@1.0.3
 #### :bug: Bug Fix
 
 - `react-scripts`
+
   - [#1233](https://github.com/facebook/create-react-app/pull/1233) Disable subresource integrity temporarily. ([@Timer](https://github.com/Timer))
 
     We added [Subresource Integrity](https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity) checks to the build output in 0.8.2 but it turns out that they may fail in browsers using special compression proxies, such as Chrome on Android, when served over HTTP. We disabled the checks until we can find a safe way to add them.
 
 - `react-dev-utils`
+
   - [#1226](https://github.com/facebook/create-react-app/pull/1226) Fix weird lint output. ([@n3tr](https://github.com/n3tr))
 
     Fixes strange lint message formatting in some edge cases.
@@ -537,14 +570,17 @@ npm install -g create-react-app@1.0.3
     Fixes a regression that caused stable Google Chrome to be opened even if you are using Canary as the default browser.
 
 - `create-react-app`
+
   - [#1223](https://github.com/facebook/create-react-app/pull/1223) Clean up Yarn detection and install code. ([@fson](https://github.com/fson))
 
   Fixes noisy output on Windows when Yarn is not installed.
+
   - [#1224](https://github.com/facebook/create-react-app/pull/1224) Exit with an error code when npm/yarn install fails. ([@fson](https://github.com/fson))
 
 #### :nail_care: Enhancement
 
 - `react-scripts`
+
   - [#1237](https://github.com/facebook/create-react-app/pull/1237) Clear scrollback in test mode. ([@gaearon](https://github.com/gaearon))
 
     Ensures test watcher clears the console before running.
@@ -562,6 +598,7 @@ npm install -g create-react-app@1.0.3
     Suppresses the instructions printed at the end of `npm run build` if `npm run deploy` already exists.
 
 - `create-react-app`
+
   - [#1236](https://github.com/facebook/create-react-app/pull/1236) Tweak console messages. ([@gaearon](https://github.com/gaearon))
 
     Makes error messages more friendly.
@@ -571,6 +608,7 @@ npm install -g create-react-app@1.0.3
     Adds `create-react-app --help` with a list of options.
 
 - `react-dev-utils`
+
   - [#1211](https://github.com/facebook/create-react-app/pull/1211) Use a better clear console sequence. ([@gaearon](https://github.com/gaearon))
 
     Ensures the development server clears the terminal when files are changed.
@@ -578,14 +616,17 @@ npm install -g create-react-app@1.0.3
 #### :memo: Documentation
 
 - `react-dev-utils`
+
   - [#1232](https://github.com/facebook/create-react-app/pull/1232) [documentation] fix html-dev-plugin link in react-dev-utils doc. ([@shogunsea](https://github.com/shogunsea))
 
 - `react-scripts`
+
   - [#1220](https://github.com/facebook/create-react-app/pull/1220) Adding troubleshooting information about Subresource Integrity digests.. ([@dfbaskin](https://github.com/dfbaskin))
 
 #### :house: Internal
 
 - `react-scripts`
+
   - [#1214](https://github.com/facebook/create-react-app/pull/1214) Bump babel-eslint version. ([@existentialism](https://github.com/existentialism))
 
 #### Committers: 10
@@ -620,11 +661,13 @@ npm install -g create-react-app@1.0.2
 #### :bug: Bug Fix
 
 - `create-react-app`
+
   - [#1204](https://github.com/facebook/create-react-app/pull/1204) Catch synchronous errors from spawning yarn. ([@gaearon](https://github.com/gaearon))
 
     Fixes a crash when running `create-react-app` in some cases.
 
 - `react-scripts`
+
   - [#1203](https://github.com/facebook/create-react-app/pull/1203) Update webpack-subresource-integrity to fix Windows builds. ([@gaearon](https://github.com/gaearon))
 
     Fixes a crash when running `npm run build` on Windows.
@@ -636,6 +679,7 @@ npm install -g create-react-app@1.0.2
 #### :memo: Documentation
 
 - `react-scripts`
+
   - [#806](https://github.com/facebook/create-react-app/pull/806) Add syntax highlighting configuration guide. ([@mareksuscak](https://github.com/mareksuscak))
 
 #### Committers: 3
@@ -663,6 +707,7 @@ npm install -g create-react-app@1.0.1
 #### :rocket: New Feature
 
 - `react-scripts`
+
   - [#1176](https://github.com/facebook/create-react-app/pull/1176) Add Subresource Integrity support. ([@XVincentX](https://github.com/XVincentX))
 
     The generated HTML now includes [Subresource Integrity](https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity) attributes ensuring that your users aren't served malicious code if your CDN gets compromised.
@@ -670,6 +715,7 @@ npm install -g create-react-app@1.0.1
 #### :bug: Bug Fix
 
 - `react-scripts`
+
   - [#1197](https://github.com/facebook/create-react-app/pull/1197) Let Jest handle all file types. ([@gaearon](https://github.com/gaearon))
 
     Since 0.8.0, we started treating imports of any unknown file extensions as URLs. However, we had to revert this change for the test configuration in 0.8.1 because of a bug causing false positives. In 0.8.2, we are fixing this and making test configuration treat imports with unknown extensions the same way as we do in the browser environment.
@@ -687,11 +733,13 @@ npm install -g create-react-app@1.0.1
     Since 0.8.0, we are treating all imports with non-JS/CSS extensions the same way. Importing them gives you a string with their URL, and if their content is small enough (less than 10K), the URL is in fact an inlined [data URI](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs). However, this doesn't work well with SVGs in case you use them for a sprite system since fragments don't work in data URIs, and it's wasteful to inline the same sprite SVG many times. To fix this, we have added an exception so that SVG files never get inlined.
 
 - `react-dev-utils`
+
   - [#1165](https://github.com/facebook/create-react-app/pull/1165) Chrome 'open tab' reuse an empty tab when possible. ([@n3tr](https://github.com/n3tr))
 
     Fixes an issue that caused two tabs to get opened instead of just one. It also fixes some cases where the window with the existing tab would not get activated.
 
 - `babel-preset-react-app`
+
   - [#1179](https://github.com/facebook/create-react-app/pull/1179) Fix Babel issues in tests by applying the right transforms. ([@gaearon](https://github.com/gaearon))
 
     Fixes regressions in test environment that caused syntax errors with generators and `async` / `await`.
@@ -699,6 +747,7 @@ npm install -g create-react-app@1.0.1
 #### :nail_care: Enhancement
 
 - `eslint-config-react-app`
+
   - [#1191](https://github.com/facebook/create-react-app/pull/1191) Relax peerDependencies for ESLint preset. ([@gaearon](https://github.com/gaearon))
 
     This allows the preset to be used in more apps without peer dependency conflicts. We still pin the exact versions in apps that haven't ejected for extra safety.
@@ -708,6 +757,7 @@ npm install -g create-react-app@1.0.1
     Using an undefined type in JSX is now treated as a hard lint error because it is guaranteed to crash application at runtime.
 
 - `react-scripts`
+
   - [#1175](https://github.com/facebook/create-react-app/pull/1175) Remove path module from webpack config on eject. ([@harunhasdal](https://github.com/harunhasdal))
 
     This makes the output after ejecting a bit cleaner.
@@ -770,6 +820,7 @@ Thanks to [@fson](https://github.com/fson) for cutting this release.
 #### :rocket: New Feature
 
 - `react-scripts`
+
   - [#944](https://github.com/facebook/create-react-app/pull/944) Crash the build during CI whenever linter warnings are encountered. ([@excitement-engineer](https://github.com/excitement-engineer))
 
     Linter warnings and errors are now checked during a continuous integration build (set by the `CI` environment variable) and the build will fail if any issues are found. See [Continuous Integration](https://github.com/facebook/create-react-app/blob/main/packages/react-scripts/template/README.md#continuous-integration) for more information.
@@ -777,6 +828,7 @@ Thanks to [@fson](https://github.com/fson) for cutting this release.
   - [#1090](https://github.com/facebook/create-react-app/pull/1090) Enable proxying of WebSockets. ([@dceddia](https://github.com/dceddia))
 
 - `create-react-app`, `react-scripts`
+
   - [#898](https://github.com/facebook/create-react-app/pull/898) Support Yarn. ([@fson](https://github.com/fson))
 
     Yarn is a new fast, reliable and secure alternative to the `npm` client. If you have Yarn installed, `create-react-app` will use it to install packages when you create an app. It also creates a `yarn.lock` file that should be checked into source control (e.g. git). This ensures the same versions of packages will be installed each time `yarn install` is run, on any machine.
@@ -794,6 +846,7 @@ Thanks to [@fson](https://github.com/fson) for cutting this release.
 #### :boom: Breaking Change
 
 - `babel-preset-react-app`
+
   - [#902](https://github.com/facebook/create-react-app/pull/902) Enable useBuiltIns option on object-rest-spread. ([@existentialism](https://github.com/existentialism))
 
     Object rest spread and JSX now use the native `Object.assign()` method instead of Babel's helper function. If you are using `babel-preset-react-app` directly in your project _and_ targeting browsers that don't have `Object.assign()` available, from now on you need a polyfill for it (e.g. [`object-assign`](https://www.npmjs.com/package/object-assign)).
@@ -803,6 +856,7 @@ Thanks to [@fson](https://github.com/fson) for cutting this release.
 #### :bug: Bug Fix
 
 - `react-scripts`
+
   - [#978](https://github.com/facebook/create-react-app/pull/978) Move the remove-on-eject-end tag at the end of the file. ([@EnoahNetzach](https://github.com/EnoahNetzach))
 
     Fixes a bug in ejected configuration.
@@ -816,6 +870,7 @@ Thanks to [@fson](https://github.com/fson) for cutting this release.
     Fixes a bug where `eject` failed when a `scripts` or `config` folder already existed in the project.
 
 - `react-dev-utils`
+
   - [#1035](https://github.com/facebook/create-react-app/pull/1035) Fix Chrome tab reuse. ([@einarlove](https://github.com/einarlove))
 
     Fixes a bug with the app not opening in the existing tab in Chrome.
@@ -830,6 +885,7 @@ Thanks to [@fson](https://github.com/fson) for cutting this release.
 #### :nail_care: Enhancement
 
 - `react-scripts`
+
   - [#1032](https://github.com/facebook/create-react-app/pull/1032) Add support for non-interactive terminal. ([@sheerun](https://github.com/sheerun))
   - [#1078](https://github.com/facebook/create-react-app/pull/1078) Upgrade Jest to 17.0. ([@fson](https://github.com/fson))
   - [#1059](https://github.com/facebook/create-react-app/pull/1059) Use `url-loader` with limit 10k as a default loader. ([@bebbi](https://github.com/bebbi))
@@ -845,6 +901,7 @@ Thanks to [@fson](https://github.com/fson) for cutting this release.
   - [#968](https://github.com/facebook/create-react-app/pull/968) Enable gzip compression in the development server (#966). ([@frontsideair](https://github.com/frontsideair))
 
 - `react-dev-utils`, `react-scripts`
+
   - [#816](https://github.com/facebook/create-react-app/pull/816) add logging of existing default port process on start. ([@ianmcnally](https://github.com/ianmcnally))
 
     `react-scripts` can guess which process is running on the port 3000 when it's not available:

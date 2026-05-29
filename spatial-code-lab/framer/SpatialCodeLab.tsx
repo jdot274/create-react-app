@@ -1297,12 +1297,12 @@ export default function SpatialCodeLab({
                       fontWeight: t.style.includes('Extra')
                         ? 800
                         : t.style.includes('Bold')
-                          ? 700
-                          : t.style === 'Semi Bold'
-                            ? 600
-                            : t.style === 'Medium'
-                              ? 500
-                              : 400,
+                        ? 700
+                        : t.style === 'Semi Bold'
+                        ? 600
+                        : t.style === 'Medium'
+                        ? 500
+                        : 400,
                       color: T.text,
                       lineHeight: 1,
                     }}

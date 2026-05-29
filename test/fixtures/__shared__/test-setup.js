@@ -11,12 +11,9 @@ const testSetup = new TestSetup(fixtureName, fixturePath, {
   pnp: !disablePnp,
 });
 
-beforeAll(
-  async () => {
-    await testSetup.setup();
-  },
-  1000 * 60 * 5,
-);
+beforeAll(async () => {
+  await testSetup.setup();
+}, 1000 * 60 * 5);
 afterAll(async () => {
   await testSetup.teardown();
 });
