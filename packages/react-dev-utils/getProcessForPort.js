@@ -29,7 +29,7 @@ function getProcessIdOnPort(port) {
   return execFileSync(
     'lsof',
     ['-i:' + port, '-P', '-t', '-sTCP:LISTEN'],
-    execOptions
+    execOptions,
   )
     .split('\n')[0]
     .trim();
@@ -48,7 +48,7 @@ function getPackageNameInDirectory(directory) {
 function getProcessCommand(processId, processDirectory) {
   var command = execSync(
     'ps -o command -p ' + processId + ' | sed -n 2p',
-    execOptions
+    execOptions,
   );
 
   command = command.replace(/\n$/, '');
@@ -66,7 +66,7 @@ function getDirectoryOfProcessById(processId) {
     'lsof -p ' +
       processId +
       ' | awk \'$4=="cwd" {for (i=9; i<=NF; i++) printf "%s ", $i}\'',
-    execOptions
+    execOptions,
   ).trim();
 }
 

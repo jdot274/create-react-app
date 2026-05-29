@@ -28,7 +28,7 @@ function namedAssetImportPlugin({ types: t }) {
           visited.add(newSpecifier);
 
           return newSpecifier;
-        })
+        }),
       );
     }
   }
@@ -44,7 +44,7 @@ function namedAssetImportPlugin({ types: t }) {
           if (t.isExportDefaultSpecifier(specifier)) {
             return t.exportDeclaration(
               [t.exportDefaultSpecifier(t.identifier(specifier.local.name))],
-              t.stringLiteral(sourcePath)
+              t.stringLiteral(sourcePath),
             );
           }
 
@@ -53,12 +53,16 @@ function namedAssetImportPlugin({ types: t }) {
             [
               t.exportSpecifier(
                 t.identifier(specifier.local.name),
-                t.identifier(specifier.exported.name)
+                t.identifier(specifier.exported.name),
               ),
             ],
             t.stringLiteral(
-              generateNewSourcePath(loaderMap, specifier.local.name, sourcePath)
-            )
+              generateNewSourcePath(
+                loaderMap,
+                specifier.local.name,
+                sourcePath,
+              ),
+            ),
           );
         });
       },
@@ -67,7 +71,7 @@ function namedAssetImportPlugin({ types: t }) {
           if (t.isImportDefaultSpecifier(specifier)) {
             return t.importDeclaration(
               [t.importDefaultSpecifier(t.identifier(specifier.local.name))],
-              t.stringLiteral(sourcePath)
+              t.stringLiteral(sourcePath),
             );
           }
 
@@ -75,16 +79,16 @@ function namedAssetImportPlugin({ types: t }) {
             [
               t.importSpecifier(
                 t.identifier(specifier.local.name),
-                t.identifier(specifier.imported.name)
+                t.identifier(specifier.imported.name),
               ),
             ],
             t.stringLiteral(
               generateNewSourcePath(
                 loaderMap,
                 specifier.imported.name,
-                sourcePath
-              )
-            )
+                sourcePath,
+              ),
+            ),
           );
         });
       },

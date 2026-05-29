@@ -45,7 +45,7 @@ function tryGitAdd(appPath) {
       ['add', path.join(appPath, 'config'), path.join(appPath, 'scripts')],
       {
         stdio: 'inherit',
-      }
+      },
     );
 
     return true;
@@ -57,8 +57,8 @@ function tryGitAdd(appPath) {
 console.log(
   chalk.cyan.bold(
     'NOTE: Create React App 2+ supports TypeScript, Sass, CSS Modules and more without ejecting: ' +
-      'https://reactjs.org/blog/2018/10/01/create-react-app-v2.html'
-  )
+      'https://reactjs.org/blog/2018/10/01/create-react-app-v2.html',
+  ),
 );
 console.log();
 
@@ -77,7 +77,7 @@ prompts({
   if (gitStatus) {
     console.error(
       chalk.red(
-        'This git repository has untracked files or uncommitted changes:'
+        'This git repository has untracked files or uncommitted changes:',
       ) +
         '\n\n' +
         gitStatus
@@ -86,8 +86,8 @@ prompts({
           .join('\n') +
         '\n\n' +
         chalk.red(
-          'Remove untracked files, stash or commit any changes, and try again.'
-        )
+          'Remove untracked files, stash or commit any changes, and try again.',
+        ),
     );
     process.exit(1);
   }
@@ -103,7 +103,7 @@ prompts({
         `\`${file}\` already exists in your app folder. We cannot ` +
           'continue as you would lose all the changes in that file or directory. ' +
           'Please move or delete it (maybe make a copy for backup) and run this ' +
-          'command again.'
+          'command again.',
       );
       process.exit(1);
     }
@@ -124,7 +124,7 @@ prompts({
         // set full path
         .map(file => path.join(ownPath, folder, file))
         // omit dirs from file list
-        .filter(file => fs.lstatSync(file).isFile())
+        .filter(file => fs.lstatSync(file).isFile()),
     );
   }, []);
 
@@ -136,7 +136,7 @@ prompts({
   const jestConfig = createJestConfig(
     filePath => path.posix.join('<rootDir>', filePath),
     null,
-    true
+    true,
   );
 
   console.log();
@@ -158,12 +158,12 @@ prompts({
         // Remove dead code from .js files on eject
         .replace(
           /\/\/ @remove-on-eject-begin([\s\S]*?)\/\/ @remove-on-eject-end/gm,
-          ''
+          '',
         )
         // Remove dead code from .applescript files on eject
         .replace(
           /-- @remove-on-eject-begin([\s\S]*?)-- @remove-on-eject-end/gm,
-          ''
+          '',
         )
         .trim() + '\n';
     console.log(`  Adding ${cyan(file.replace(ownPath, ''))} to the project`);
@@ -219,12 +219,12 @@ prompts({
       }
       appPackage.scripts[key] = appPackage.scripts[key].replace(
         regex,
-        'node scripts/$1.js'
+        'node scripts/$1.js',
       );
       console.log(
         `  Replacing ${cyan(`"${binKey} ${key}"`)} with ${cyan(
-          `"node scripts/${key}.js"`
-        )}`
+          `"node scripts/${key}.js"`,
+        )}`,
       );
     });
   });
@@ -251,7 +251,7 @@ prompts({
 
   fs.writeFileSync(
     path.join(appPath, 'package.json'),
-    JSON.stringify(appPackage, null, 2) + os.EOL
+    JSON.stringify(appPackage, null, 2) + os.EOL,
   );
   console.log();
 
@@ -268,13 +268,13 @@ prompts({
           // Remove react-scripts types
           .replace(
             /^\s*\/\/\/\s*<reference\s+types.+?"react-scripts".*\/>.*(?:\n|$)/gm,
-            ''
+            '',
           )
           .trim() + os.EOL;
 
       fs.writeFileSync(
         paths.appTypeDeclarations,
-        (ownContent + os.EOL + content).trim() + os.EOL
+        (ownContent + os.EOL + content).trim() + os.EOL,
       );
     } catch (e) {
       // It's not essential that this succeeds, the TypeScript user should
@@ -300,7 +300,7 @@ prompts({
       appPath,
       'node_modules',
       '.bin',
-      'react-scripts.cmd'
+      'react-scripts.cmd',
     );
     let windowsCmdFileContent;
     if (process.platform === 'win32') {

@@ -90,7 +90,7 @@ Object.keys(packagePathsByName).forEach(name => {
 
   fs.writeFileSync(packageJson, JSON.stringify(json, null, 2), 'utf8');
   console.log(
-    'Replaced local dependencies in packages/' + name + '/package.json'
+    'Replaced local dependencies in packages/' + name + '/package.json',
   );
 });
 console.log('Replaced all local dependencies for testing.');
@@ -113,7 +113,7 @@ cp.execSync(
   {
     cwd: rootDir,
     stdio: 'inherit',
-  }
+  },
 );
 
 // Cleanup

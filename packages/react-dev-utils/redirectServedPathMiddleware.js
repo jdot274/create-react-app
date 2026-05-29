@@ -21,7 +21,7 @@ module.exports = function createRedirectServedPathMiddleware(servedPath) {
     } else {
       const newPath = path.posix.join(
         servedPath,
-        req.path !== '/' ? req.path : ''
+        req.path !== '/' ? req.path : '',
       );
       res.redirect(newPath);
     }

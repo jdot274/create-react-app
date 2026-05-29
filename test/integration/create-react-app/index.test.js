@@ -41,11 +41,11 @@ const run = async (args, options) => {
   process.stdout.write(
     `::group::Test "${
       expect.getState().currentTestName
-    }" - "create-react-app ${args.join(' ')}" output:\n`
+    }" - "create-react-app ${args.join(' ')}" output:\n`,
   );
   const result = execa('node', [cli].concat(args), options);
   result.stdout.on('data', chunk =>
-    process.stdout.write(chunk.toString('utf8'))
+    process.stdout.write(chunk.toString('utf8')),
   );
   const childProcessResult = await result;
   process.stdout.write(`ExitCode: ${childProcessResult.exitCode}\n`);
@@ -107,7 +107,7 @@ describe('create-react-app', () => {
 
     // Assert for the expected message
     expect(stdout).toContain(
-      `The directory ${projectName} contains files that could conflict`
+      `The directory ${projectName} contains files that could conflict`,
     );
 
     // Existing file is still there
@@ -139,7 +139,7 @@ describe('create-react-app', () => {
 
     // Assert for the generated files
     const generatedFilesWithYarn = generatedFiles.map(file =>
-      file === 'package-lock.json' ? 'yarn.lock' : file
+      file === 'package-lock.json' ? 'yarn.lock' : file,
     );
 
     expectAllFiles(files, generatedFilesWithYarn);
@@ -150,7 +150,7 @@ describe('create-react-app', () => {
       [projectName, '--template', 'typescript'],
       {
         cwd: __dirname,
-      }
+      },
     );
 
     // Assert for exit code

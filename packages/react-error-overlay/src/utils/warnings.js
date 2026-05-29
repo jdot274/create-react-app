@@ -17,7 +17,7 @@ function stripInlineStacktrace(message: string): string {
 
 function massage(
   warning: string,
-  frames: ReactFrame[]
+  frames: ReactFrame[],
 ): { message: string, stack: string } {
   let message = stripInlineStacktrace(warning);
 

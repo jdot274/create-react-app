@@ -43,7 +43,7 @@ describe('getCSSModuleLocalIdent', () => {
         },
         '[hash:base64]',
         className,
-        options
+        options,
       );
       expect(ident).toBe(expected);
     });

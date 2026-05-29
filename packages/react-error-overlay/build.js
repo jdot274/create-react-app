@@ -51,7 +51,7 @@ function build(config, name, callback) {
     }
 
     console.log(
-      stats.toString({ colors: true, modules: false, version: false })
+      stats.toString({ colors: true, modules: false, version: false }),
     );
     console.log();
 

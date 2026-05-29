@@ -29,7 +29,7 @@ function printFileSizesAfterBuild(
   previousSizeMap,
   buildFolder,
   maxBundleGzipSize,
-  maxChunkGzipSize
+  maxChunkGzipSize,
 ) {
   var root = previousSizeMap.root;
   var sizes = previousSizeMap.sizes;
@@ -46,20 +46,20 @@ function printFileSizesAfterBuild(
           return {
             folder: path.join(
               path.basename(buildFolder),
-              path.dirname(asset.name)
+              path.dirname(asset.name),
             ),
             name: path.basename(asset.name),
             size: size,
             sizeLabel:
               filesize(size) + (difference ? ' (' + difference + ')' : ''),
           };
-        })
+        }),
     )
     .reduce((single, all) => all.concat(single), []);
   assets.sort((a, b) => b.size - a.size);
   var longestSizeLabelLength = Math.max.apply(
     null,
-    assets.map(a => stripAnsi(a.sizeLabel).length)
+    assets.map(a => stripAnsi(a.sizeLabel).length),
   );
   var suggestBundleSplitting = false;
   assets.forEach(asset => {
@@ -82,23 +82,23 @@ function printFileSizesAfterBuild(
         (isLarge ? chalk.yellow(sizeLabel) : sizeLabel) +
         '  ' +
         chalk.dim(asset.folder + path.sep) +
-        chalk.cyan(asset.name)
+        chalk.cyan(asset.name),
     );
   });
   if (suggestBundleSplitting) {
     console.log();
     console.log(
-      chalk.yellow('The bundle size is significantly larger than recommended.')
+      chalk.yellow('The bundle size is significantly larger than recommended.'),
     );
     console.log(
       chalk.yellow(
-        'Consider reducing it with code splitting: https://create-react-app.dev/docs/code-splitting/'
-      )
+        'Consider reducing it with code splitting: https://create-react-app.dev/docs/code-splitting/',
+      ),
     );
     console.log(
       chalk.yellow(
-        'You can also analyze the project dependencies: https://goo.gl/LeUzfb'
-      )
+        'You can also analyze the project dependencies: https://goo.gl/LeUzfb',
+      ),
     );
   }
 }
@@ -109,7 +109,7 @@ function removeFileNameHash(buildFolder, fileName) {
     .replace(/\\/g, '/')
     .replace(
       /\/?(.*)(\.[0-9a-f]+)(\.chunk)?(\.js|\.css)/,
-      (match, p1, p2, p3, p4) => p1 + p4
+      (match, p1, p2, p3, p4) => p1 + p4,
     );
 }
 

@@ -53,8 +53,8 @@ function executeNodeScript(scriptPath, url) {
       console.log();
       console.log(
         chalk.red(
-          'The script specified as BROWSER environment variable failed.'
-        )
+          'The script specified as BROWSER environment variable failed.',
+        ),
       );
       console.log(chalk.cyan(scriptPath) + ' exited with code ' + code + '.');
       console.log();
@@ -100,7 +100,7 @@ function startBrowserProcess(browser, url, args) {
           {
             cwd: __dirname,
             stdio: 'ignore',
-          }
+          },
         );
         return true;
       } catch (err) {

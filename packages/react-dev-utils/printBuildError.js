@@ -30,9 +30,9 @@ module.exports = function printBuildError(err) {
       console.log(
         'Failed to minify the code from this file: \n\n',
         chalk.yellow(
-          `\t${problemPath}:${line}${column !== '0' ? ':' + column : ''}`
+          `\t${problemPath}:${line}${column !== '0' ? ':' + column : ''}`,
         ),
-        '\n'
+        '\n',
       );
     } catch (ignored) {
       console.log('Failed to minify the bundle.', err);

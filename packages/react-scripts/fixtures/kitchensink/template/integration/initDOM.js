@@ -20,7 +20,7 @@ export const fetchFile = url => {
   const pathPrefix = process.env.PUBLIC_URL.replace(/^https?:\/\/[^/]+\/?/, '');
   return fs.readFileSync(
     path.join(path.dirname(file), url.pathname.replace(pathPrefix, '')),
-    'utf8'
+    'utf8',
   );
 };
 
@@ -34,7 +34,7 @@ const fileResourceLoader =
 if (!process.env.E2E_FILE && !process.env.E2E_URL) {
   it.only('can run jsdom (at least one of "E2E_FILE" or "E2E_URL" environment variables must be provided)', () => {
     expect(
-      new Error("This isn't the error you are looking for.")
+      new Error("This isn't the error you are looking for."),
     ).toBeUndefined();
   });
 }
@@ -86,7 +86,7 @@ const initDOM = async feature =>
       document.addEventListener(
         'ReactFeatureDidMount',
         () => resolve(document),
-        { capture: true, once: true }
+        { capture: true, once: true },
       );
       document.addEventListener(
         'ReactFeatureError',
@@ -98,7 +98,7 @@ const initDOM = async feature =>
 
           reject(`Error loading feature: ${feature}`);
         },
-        { capture: true, once: true }
+        { capture: true, once: true },
       );
     } catch (e) {
       reject(e);

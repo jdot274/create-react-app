@@ -19,7 +19,7 @@ module.exports = class ForkTsCheckerWarningWebpackPlugin {
     const hooks = ForkTsCheckerWebpackPlugin.getCompilerHooks(compiler);
 
     hooks.issues.tap('ForkTsCheckerWarningWebpackPlugin', issues =>
-      issues.map(issue => ({ ...issue, severity: 'warning' }))
+      issues.map(issue => ({ ...issue, severity: 'warning' })),
     );
   }
 };

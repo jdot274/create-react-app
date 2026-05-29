@@ -402,7 +402,6 @@ We've removed this rule as it is not compatible with Prettier. If you rely on th
 #### :boom: Breaking Change
 
 - `create-react-app`, `react-dev-utils`, `react-scripts`
-
   - [#7988](https://github.com/facebook/create-react-app/pull/7988) Bump webpack-dev-server ([@ianschmitz](https://github.com/ianschmitz))
 
     **NOTE: This is only a breaking change if you're using `react-dev-utils` outside of Create React App.**

@@ -607,12 +607,10 @@ yarn add --exact react-scripts@2.1.0
 #### :bug: Bug Fix
 
 - `react-dev-utils`
-
   - [#5431](https://github.com/facebook/create-react-app/pull/5431) Fix click-to-open on Windows. ([@gaearon](https://github.com/gaearon))
   - [#5335](https://github.com/facebook/create-react-app/pull/5335) Fix file size report after build. ([@OskarPersson](https://github.com/OskarPersson))
 
 - `create-react-app`
-
   - [#5362](https://github.com/facebook/create-react-app/pull/5362) Fix CI: non-semver compliant Yarn versions. ([@Timer](https://github.com/Timer))
 
 - `react-scripts`
@@ -621,7 +619,6 @@ yarn add --exact react-scripts@2.1.0
 #### :nail_care: Enhancement
 
 - `babel-preset-react-app`
-
   - [#4984](https://github.com/facebook/create-react-app/pull/4984) Use the correct dependency for `babel-plugin-dynamic-import-node`. ([@vikr01](https://github.com/vikr01))
 
 - `react-scripts`
@@ -642,7 +639,6 @@ yarn add --exact react-scripts@2.1.0
   - [#5290](https://github.com/facebook/create-react-app/pull/5290) Add react-testing-library documentation/examples (#4679). ([@gnapse](https://github.com/gnapse))
   - [#5286](https://github.com/facebook/create-react-app/pull/5286) Fix broken links to src/serviceWorker.js. ([@adambowles](https://github.com/adambowles))
 - Other
-
   - [#5374](https://github.com/facebook/create-react-app/pull/5374) Add the new SVGs feature from the template README to the root README. ([@neo](https://github.com/neo))
   - [#5371](https://github.com/facebook/create-react-app/pull/5371) Update path to serviceWorker.js in graphical folder structure. ([@jonscottclark](https://github.com/jonscottclark))
   - [#5337](https://github.com/facebook/create-react-app/pull/5337) Fix typo. ([@mvasin](https://github.com/mvasin))
@@ -653,7 +649,6 @@ yarn add --exact react-scripts@2.1.0
 #### :house: Internal
 
 - Other
-
   - [#5365](https://github.com/facebook/create-react-app/pull/5365) Clean up the behavior tests. ([@Timer](https://github.com/Timer))
 
 - `create-react-app`

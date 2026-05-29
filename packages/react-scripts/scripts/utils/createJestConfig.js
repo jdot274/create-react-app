@@ -41,11 +41,11 @@ module.exports = (resolve, rootDir, isEjecting) => {
     testEnvironment: 'jsdom',
     transform: {
       '^.+\\.(js|jsx|mjs|cjs|ts|tsx)$': resolve(
-        'config/jest/babelTransform.js'
+        'config/jest/babelTransform.js',
       ),
       '^.+\\.css$': resolve('config/jest/cssTransform.js'),
       '^(?!.*\\.(js|jsx|mjs|cjs|ts|tsx|css|json)$)': resolve(
-        'config/jest/fileTransform.js'
+        'config/jest/fileTransform.js',
       ),
     },
     transformIgnorePatterns: [
@@ -59,7 +59,7 @@ module.exports = (resolve, rootDir, isEjecting) => {
       ...(modules.jestAliases || {}),
     },
     moduleFileExtensions: [...paths.moduleFileExtensions, 'node'].filter(
-      ext => !ext.includes('mjs')
+      ext => !ext.includes('mjs'),
     ),
     watchPlugins: [
       'jest-watch-typeahead/filename',
@@ -118,8 +118,8 @@ module.exports = (resolve, rootDir, isEjecting) => {
               ' in your package.json.\n\n' +
               'Remove it from Jest configuration, and put the initialization code in ' +
               chalk.bold('src/setupTests.js') +
-              '.\nThis file will be loaded automatically.\n'
-          )
+              '.\nThis file will be loaded automatically.\n',
+          ),
         );
       } else {
         console.error(
@@ -140,8 +140,8 @@ module.exports = (resolve, rootDir, isEjecting) => {
               chalk.bold('npm run eject') +
               ' but remember that this is a one-way operation. ' +
               'You may also file an issue with Create React App to discuss ' +
-              'supporting more options out of the box.\n'
-          )
+              'supporting more options out of the box.\n',
+          ),
         );
       }
 

@@ -111,7 +111,7 @@ function StackFrame(props: StackFramePropsType) {
     fileName,
     lineNumber,
     columnNumber,
-    compiled
+    compiled,
   );
 
   let codeBlockProps = null;

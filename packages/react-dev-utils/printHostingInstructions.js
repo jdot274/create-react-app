@@ -17,7 +17,7 @@ function printHostingInstructions(
   publicUrl,
   publicPath,
   buildFolder,
-  useYarn
+  useYarn,
 ) {
   if (publicUrl && publicUrl.includes('.github.io/')) {
     // "homepage": "http://user.github.io/project"
@@ -48,13 +48,13 @@ function printHostingInstructions(
 function printBaseMessage(buildFolder, hostingLocation) {
   console.log(
     `The project was built assuming it is hosted at ${chalk.green(
-      hostingLocation || 'the server root'
-    )}.`
+      hostingLocation || 'the server root',
+    )}.`,
   );
   console.log(
     `You can control this with the ${chalk.green(
-      'homepage'
-    )} field in your ${chalk.cyan('package.json')}.`
+      'homepage',
+    )} field in your ${chalk.cyan('package.json')}.`,
   );
 
   if (!hostingLocation) {
@@ -63,8 +63,8 @@ function printBaseMessage(buildFolder, hostingLocation) {
 
     console.log(
       `  ${chalk.green('"homepage"')} ${chalk.cyan(':')} ${chalk.green(
-        '"http://myname.github.io/myapp"'
-      )}${chalk.cyan(',')}`
+        '"http://myname.github.io/myapp"',
+      )}${chalk.cyan(',')}`,
     );
   }
   console.log();
@@ -85,7 +85,7 @@ function printDeployInstructions(publicUrl, hasDeployScript, useYarn) {
     console.log();
 
     console.log(
-      `Add the following script in your ${chalk.cyan('package.json')}.`
+      `Add the following script in your ${chalk.cyan('package.json')}.`,
     );
     console.log();
 
@@ -94,13 +94,13 @@ function printDeployInstructions(publicUrl, hasDeployScript, useYarn) {
     console.log(`      ${chalk.dim('// ...')}`);
     console.log(
       `      ${chalk.yellow('"predeploy"')}: ${chalk.yellow(
-        `"${useYarn ? 'yarn' : 'npm run'} build",`
-      )}`
+        `"${useYarn ? 'yarn' : 'npm run'} build",`,
+      )}`,
     );
     console.log(
       `      ${chalk.yellow('"deploy"')}: ${chalk.yellow(
-        '"gh-pages -d build"'
-      )}`
+        '"gh-pages -d build"',
+      )}`,
     );
     console.log('    }');
     console.log();

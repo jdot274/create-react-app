@@ -123,6 +123,6 @@ describe('getPublicUrlOrPath', () => {
     it(JSON.stringify(t), () => {
       const actual = getPublicUrlOrPath(t.dev, t.homepage, t.publicUrl);
       expect(actual).toBe(t.expect);
-    })
+    }),
   );
 });

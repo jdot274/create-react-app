@@ -68,7 +68,7 @@ function StackFrameCodeBlock(props: Exact<StackFrameCodeBlockPropsType>) {
       forceColor: true,
       linesAbove: contextSize,
       linesBelow: contextSize,
-    }
+    },
   );
   const htmlHighlight = generateAnsiHTML(ansiHighlight, theme);
   const code = document.createElement('code');

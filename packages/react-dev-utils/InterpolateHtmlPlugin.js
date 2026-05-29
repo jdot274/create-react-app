@@ -32,7 +32,7 @@ class InterpolateHtmlPlugin {
             const value = this.replacements[key];
             data.html = data.html.replace(
               new RegExp('%' + escapeStringRegexp(key) + '%', 'g'),
-              value
+              value,
             );
           });
         });

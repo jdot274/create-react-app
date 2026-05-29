@@ -40,13 +40,13 @@ module.exports = function (api, opts) {
   var useAbsoluteRuntime = validateBoolOption(
     'absoluteRuntime',
     opts.absoluteRuntime,
-    true
+    true,
   );
 
   var absoluteRuntimePath = undefined;
   if (useAbsoluteRuntime) {
     absoluteRuntimePath = path.dirname(
-      require.resolve('@babel/runtime/package.json')
+      require.resolve('@babel/runtime/package.json'),
     );
   }
 
@@ -56,7 +56,7 @@ module.exports = function (api, opts) {
         '`BABEL_ENV` environment variables. Valid values are "development", ' +
         '"test", and "production". Instead, received: ' +
         JSON.stringify(env) +
-        '.'
+        '.',
     );
   }
 

@@ -31,7 +31,7 @@ self.addEventListener('activate', () => {
     }
   });
 });
-`
+`,
       );
     } else {
       next();

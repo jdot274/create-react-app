@@ -46,7 +46,7 @@ if (major < 14) {
       currentNodeVersion +
       '.\n' +
       'Create React App requires Node 14 or higher. \n' +
-      'Please update your version of Node.'
+      'Please update your version of Node.',
   );
   process.exit(1);
 }

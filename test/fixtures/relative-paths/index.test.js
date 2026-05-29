@@ -12,16 +12,16 @@ test('contains a relative path in production build', async () => {
   const buildDir = path.join(testSetup.testDirectory, 'build');
   const cssFile = path.join(
     buildDir,
-    globby.sync('**/*.css', { cwd: buildDir }).pop()
+    globby.sync('**/*.css', { cwd: buildDir }).pop(),
   );
   const svgFile = path.join(
     buildDir,
-    globby.sync('**/*.svg', { cwd: buildDir }).pop()
+    globby.sync('**/*.svg', { cwd: buildDir }).pop(),
   );
   const desiredPath = /url\((.+?)\)/
     .exec(fs.readFileSync(cssFile, 'utf8'))
     .pop();
   expect(path.resolve(path.join(path.dirname(cssFile), desiredPath))).toBe(
-    path.resolve(svgFile)
+    path.resolve(svgFile),
   );
 });

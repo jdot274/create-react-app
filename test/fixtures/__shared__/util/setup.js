@@ -25,13 +25,13 @@ module.exports = class TestSetup {
     this.testDirectory = tempy.directory();
     await fs.copy(
       path.resolve(__dirname, '..', 'template'),
-      this.testDirectory
+      this.testDirectory,
     );
     await fs.copy(this.templateDirectory, this.testDirectory);
     await fs.remove(path.resolve(this.testDirectory, 'test.partial.js'));
 
     const packageJson = await fs.readJson(
-      path.resolve(this.testDirectory, 'package.json')
+      path.resolve(this.testDirectory, 'package.json'),
     );
 
     const shouldInstallScripts = !this.isLocal;
@@ -48,7 +48,7 @@ module.exports = class TestSetup {
     packageJson.license = packageJson.license || 'UNLICENSED';
     await fs.writeJson(
       path.resolve(this.testDirectory, 'package.json'),
-      packageJson
+      packageJson,
     );
 
     await execa('npm', ['install'], {
@@ -64,10 +64,10 @@ module.exports = class TestSetup {
             'packages',
             'react-scripts',
             'bin',
-            'react-scripts.js'
-          )
+            'react-scripts.js',
+          ),
         ),
-        path.join(this.testDirectory, 'node_modules', '.bin', 'react-scripts')
+        path.join(this.testDirectory, 'node_modules', '.bin', 'react-scripts'),
       );
       await execa('npm', ['link', 'react-scripts'], {
         cwd: this.testDirectory,

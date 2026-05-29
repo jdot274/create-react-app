@@ -40,7 +40,7 @@ module.exports = class ReactScripts {
           BROWSER: 'none',
           PORT: port,
         },
-        env
+        env,
       ),
     };
 
@@ -71,7 +71,7 @@ module.exports = class ReactScripts {
       ['run', 'serve', '--', '-p', port, '-s', 'build/'],
       {
         cwd: this.root,
-      }
+      },
     );
     await waitForLocalhost({ port });
     return {

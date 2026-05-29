@@ -51,7 +51,7 @@ class ModuleScopePlugin {
         }
         const requestFullPath = path.resolve(
           path.dirname(request.context.issuer),
-          request.__innerRequest_request
+          request.__innerRequest_request,
         );
         if (this.allowedFiles.has(requestFullPath)) {
           return callback();
@@ -76,19 +76,19 @@ class ModuleScopePlugin {
         ) {
           const scopeError = new Error(
             `You attempted to import ${chalk.cyan(
-              request.__innerRequest_request
+              request.__innerRequest_request,
             )} which falls outside of the project ${chalk.cyan(
-              'src/'
+              'src/',
             )} directory. ` +
               `Relative imports outside of ${chalk.cyan(
-                'src/'
+                'src/',
               )} are not supported.` +
               os.EOL +
               `You can either move it inside ${chalk.cyan(
-                'src/'
+                'src/',
               )}, or add a symlink to it from project's ${chalk.cyan(
-                'node_modules/'
-              )}.`
+                'node_modules/',
+              )}.`,
           );
           Object.defineProperty(scopeError, '__module_scope_plugin', {
             value: true,
@@ -99,7 +99,7 @@ class ModuleScopePlugin {
         } else {
           callback();
         }
-      }
+      },
     );
   }
 }
