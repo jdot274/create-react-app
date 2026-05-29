@@ -1,0 +1,2895 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Spatial Code Lab — An interactive spatial canvas for Spline, CodePen, Figma & React"
+    />
+    <title>Spatial Code Lab</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Spline Viewer Web Component CDN -->
+    <script
+      type="module"
+      src="https://unpkg.com/@splinetool/viewer@1.0.82/build/spline-viewer.js"
+    ></script>
+
+    <style>
+      /* ============================================================
+       SPATIAL CODE LAB — DESIGN SYSTEM
+       Glassmorphism · Dark Mode · Blue Glow
+    ============================================================ */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --bg: #070710;
+        --bg-el: #0d0d1a;
+        --glass: rgba(255, 255, 255, 0.04);
+        --border: rgba(255, 255, 255, 0.08);
+        --border-h: rgba(255, 255, 255, 0.16);
+        --blue3: #93c5fd;
+        --blue4: #60a5fa;
+        --blue5: #3b82f6;
+        --ind4: #818cf8;
+        --ind5: #6366f1;
+        --cyan4: #22d3ee;
+        --purp4: #c084fc;
+        --text: #f8fafc;
+        --text-m: rgba(248, 250, 252, 0.55);
+        --text-d: rgba(248, 250, 252, 0.3);
+        --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        --r-sm: 8px;
+        --r-md: 12px;
+        --r-lg: 16px;
+        --r-xl: 24px;
+        --r-2xl: 32px;
+        --r-full: 9999px;
+        --blur: blur(20px);
+        --tr: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        --tr-spring: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+
+      html {
+        scroll-behavior: smooth;
+        font-size: 16px;
+      }
+
+      body {
+        font-family: var(--font);
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      ::-webkit-scrollbar {
+        width: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: var(--bg);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: rgba(59, 130, 246, 0.35);
+        border-radius: 99px;
+      }
+
+      /* ── KEYFRAMES ── */
+      @keyframes heroGrad {
+        0% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        100% {
+          opacity: 0.75;
+          transform: scale(1.05);
+        }
+      }
+      @keyframes orbFloat {
+        0%,
+        100% {
+          transform: translate(0, 0) scale(1);
+        }
+        33% {
+          transform: translate(18px, -28px) scale(1.05);
+        }
+        66% {
+          transform: translate(-14px, 18px) scale(0.95);
+        }
+      }
+      @keyframes gradFlow {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.4;
+          transform: scale(0.7);
+        }
+      }
+      @keyframes spin {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes orbRotate {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      @keyframes particleFlt {
+        0%,
+        100% {
+          transform: translateY(0) scale(1);
+          opacity: 0.6;
+        }
+        50% {
+          transform: translateY(-22px) scale(1.2);
+          opacity: 1;
+        }
+      }
+      @keyframes liquidMorph {
+        0%,
+        100% {
+          border-radius: 60% 40% 30% 70%/60% 30% 70% 40%;
+        }
+        25% {
+          border-radius: 30% 60% 70% 40%/50% 60% 30% 60%;
+        }
+        50% {
+          border-radius: 50% 60% 40% 50%/30% 60% 70% 50%;
+        }
+        75% {
+          border-radius: 40% 50% 60% 30%/70% 40% 50% 60%;
+        }
+      }
+      @keyframes cubeRotate {
+        from {
+          transform: rotateY(0deg) rotateX(12deg);
+        }
+        to {
+          transform: rotateY(360deg) rotateX(12deg);
+        }
+      }
+      @keyframes gridShift {
+        0% {
+          transform: perspective(300px) rotateX(25deg) translateY(0);
+        }
+        100% {
+          transform: perspective(300px) rotateX(25deg) translateY(-32px);
+        }
+      }
+      @keyframes ptclUp {
+        0% {
+          transform: translateY(0) scale(1);
+          opacity: 0.7;
+        }
+        100% {
+          transform: translateY(-90px) scale(0);
+          opacity: 0;
+        }
+      }
+      @keyframes neonPulse {
+        0%,
+        100% {
+          text-shadow: 0 0 8px var(--cyan4), 0 0 20px var(--cyan4),
+            0 0 40px var(--cyan4);
+        }
+        50% {
+          text-shadow: 0 0 4px var(--cyan4), 0 0 10px var(--cyan4),
+            0 0 20px var(--cyan4);
+        }
+      }
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: scale(0.92) translateY(12px);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1) translateY(0);
+        }
+      }
+      @keyframes bdrIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      @keyframes barGrow {
+        from {
+          transform: scaleY(0);
+        }
+        to {
+          transform: scaleY(1);
+        }
+      }
+
+      /* ── VISIBLE-IN CLASS (scroll animation trigger) ── */
+      .reveal {
+        opacity: 0;
+        transform: translateY(24px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+      }
+      .reveal.in-view {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* ── DOCK NAV ── */
+      .dock-nav {
+        position: fixed;
+        bottom: 24px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 8px 12px;
+        background: rgba(7, 7, 16, 0.85);
+        backdrop-filter: var(--blur);
+        -webkit-backdrop-filter: var(--blur);
+        border: 1px solid var(--border);
+        border-radius: var(--r-full);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55),
+          0 0 32px rgba(59, 130, 246, 0.08);
+      }
+      .dock-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3px;
+        padding: 8px 16px;
+        border-radius: var(--r-full);
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        color: var(--text-d);
+        font-size: 11px;
+        font-weight: 500;
+        font-family: var(--font);
+        transition: all var(--tr);
+        white-space: nowrap;
+      }
+      .dock-item .dock-icon {
+        font-size: 15px;
+        line-height: 1;
+      }
+      .dock-item:hover {
+        background: rgba(255, 255, 255, 0.07);
+        color: var(--text);
+        transform: translateY(-2px);
+      }
+      .dock-item.active {
+        background: rgba(59, 130, 246, 0.18);
+        color: var(--blue4);
+        box-shadow: 0 0 20px rgba(59, 130, 246, 0.12);
+      }
+
+      /* ── SECTIONS ── */
+      section {
+        position: relative;
+        padding: 96px 80px;
+      }
+      .section-inner {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      .section-header {
+        text-align: center;
+        margin-bottom: 64px;
+      }
+      .section-label {
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        color: var(--blue4);
+        margin-bottom: 12px;
+        text-transform: uppercase;
+      }
+      .section-title {
+        font-size: clamp(2rem, 5vw, 3.25rem);
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        color: var(--text);
+        margin-bottom: 16px;
+      }
+      .section-desc {
+        font-size: 16px;
+        color: var(--text-m);
+        max-width: 480px;
+        margin: 0 auto;
+      }
+
+      /* ── GLASS CARD ── */
+      .glass-card {
+        background: var(--glass);
+        border: 1px solid var(--border);
+        border-radius: var(--r-xl);
+        backdrop-filter: var(--blur);
+        -webkit-backdrop-filter: var(--blur);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2),
+          inset 0 1px 0 rgba(255, 255, 255, 0.06);
+        position: relative;
+        overflow: hidden;
+        transition: transform var(--tr), box-shadow var(--tr),
+          border-color var(--tr);
+      }
+      .glass-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.12),
+          transparent
+        );
+      }
+      .glass-card::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.05) 0%,
+          transparent 50%
+        );
+        pointer-events: none;
+      }
+      .glass-card:hover {
+        border-color: var(--border-h);
+        transform: translateY(-2px);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3),
+          0 0 30px rgba(59, 130, 246, 0.08);
+      }
+
+      /* ── FLOATING BUTTON ── */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 14px 28px;
+        border-radius: var(--r-full);
+        font-size: 14px;
+        font-weight: 600;
+        font-family: var(--font);
+        cursor: pointer;
+        border: none;
+        transition: all var(--tr-spring);
+      }
+      .btn-primary {
+        background: linear-gradient(135deg, var(--blue5), var(--ind5));
+        color: #fff;
+        box-shadow: 0 4px 24px rgba(59, 130, 246, 0.4),
+          inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      }
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 32px rgba(59, 130, 246, 0.5);
+      }
+      .btn-secondary {
+        background: rgba(255, 255, 255, 0.06);
+        color: var(--text-m);
+        border: 1px solid var(--border);
+        backdrop-filter: var(--blur);
+        -webkit-backdrop-filter: var(--blur);
+      }
+      .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--text);
+        transform: translateY(-2px);
+      }
+
+      /* ── CHIP ── */
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 3px 10px;
+        border-radius: var(--r-full);
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+      }
+      .chip-blue {
+        background: rgba(59, 130, 246, 0.15);
+        border: 1px solid rgba(59, 130, 246, 0.25);
+        color: var(--blue4);
+      }
+      .chip-ind {
+        background: rgba(99, 102, 241, 0.15);
+        border: 1px solid rgba(99, 102, 241, 0.25);
+        color: var(--ind4);
+      }
+      .chip-cyan {
+        background: rgba(6, 182, 212, 0.15);
+        border: 1px solid rgba(6, 182, 212, 0.25);
+        color: var(--cyan4);
+      }
+      .chip-purple {
+        background: rgba(192, 132, 252, 0.15);
+        border: 1px solid rgba(192, 132, 252, 0.25);
+        color: var(--purp4);
+      }
+
+      /* ═══════════════════════════════════════════
+       HERO
+    ═══════════════════════════════════════════ */
+      #hero {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 64px 80px;
+        overflow: hidden;
+      }
+      .hero-bg {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background: radial-gradient(
+            ellipse 80% 50% at 50% -10%,
+            rgba(59, 130, 246, 0.15) 0%,
+            transparent 60%
+          ),
+          radial-gradient(
+            ellipse 60% 40% at 85% 50%,
+            rgba(99, 102, 241, 0.1) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            ellipse 50% 40% at 15% 75%,
+            rgba(6, 182, 212, 0.07) 0%,
+            transparent 50%
+          );
+        animation: heroGrad 12s ease-in-out infinite alternate;
+      }
+      .hero-grid {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background-image: linear-gradient(
+            rgba(59, 130, 246, 0.04) 1px,
+            transparent 1px
+          ),
+          linear-gradient(90deg, rgba(59, 130, 246, 0.04) 1px, transparent 1px);
+        background-size: 60px 60px;
+        mask-image: radial-gradient(
+          ellipse 80% 80% at 50% 50%,
+          black 20%,
+          transparent 70%
+        );
+      }
+      .hero-orb {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(60px);
+        pointer-events: none;
+      }
+      .hero-orb-1 {
+        width: 440px;
+        height: 440px;
+        background: rgba(59, 130, 246, 0.12);
+        top: -110px;
+        left: -110px;
+        animation: orbFloat 8s ease-in-out infinite;
+      }
+      .hero-orb-2 {
+        width: 320px;
+        height: 320px;
+        background: rgba(99, 102, 241, 0.1);
+        bottom: -70px;
+        right: -70px;
+        animation: orbFloat 8s ease-in-out infinite;
+        animation-delay: -3s;
+      }
+      .hero-orb-3 {
+        width: 210px;
+        height: 210px;
+        background: rgba(6, 182, 212, 0.07);
+        top: 45%;
+        right: 12%;
+        animation: orbFloat 8s ease-in-out infinite;
+        animation-delay: -6s;
+      }
+      .hero-content {
+        position: relative;
+        z-index: 10;
+        text-align: center;
+        max-width: 900px;
+        width: 100%;
+      }
+      .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 18px;
+        margin-bottom: 32px;
+        background: rgba(59, 130, 246, 0.1);
+        border: 1px solid rgba(59, 130, 246, 0.25);
+        border-radius: var(--r-full);
+        animation: fadeUp 0.8s ease forwards;
+      }
+      .hero-badge-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--blue4);
+        animation: pulse 2s ease-in-out infinite;
+      }
+      .hero-badge-text {
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--blue4);
+        letter-spacing: 0.1em;
+      }
+      .hero-headline {
+        font-size: clamp(2.8rem, 8vw, 5.5rem);
+        font-weight: 800;
+        line-height: 1.05;
+        letter-spacing: -0.03em;
+        margin-bottom: 24px;
+        background: linear-gradient(
+          135deg,
+          #f8fafc 0%,
+          rgba(248, 250, 252, 0.9) 20%,
+          #60a5fa 40%,
+          #818cf8 60%,
+          #22d3ee 80%,
+          #f8fafc 100%
+        );
+        background-size: 200% 200%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: gradFlow 8s ease infinite, fadeUp 0.8s ease 0.1s both;
+      }
+      .hero-subtitle {
+        font-size: clamp(1rem, 2.5vw, 1.2rem);
+        color: var(--text-m);
+        max-width: 580px;
+        margin: 0 auto 40px;
+        line-height: 1.75;
+        animation: fadeUp 0.8s ease 0.2s both;
+      }
+      .hero-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        flex-wrap: wrap;
+        animation: fadeUp 0.8s ease 0.3s both;
+      }
+      .hero-scene {
+        position: relative;
+        z-index: 5;
+        width: 100%;
+        max-width: 900px;
+        margin-top: 64px;
+        animation: fadeUp 0.8s ease 0.4s both;
+      }
+      .hero-scene-glass {
+        height: 360px;
+        border-radius: var(--r-2xl);
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid var(--border);
+        backdrop-filter: var(--blur);
+        -webkit-backdrop-filter: var(--blur);
+        box-shadow: 0 40px 80px rgba(0, 0, 0, 0.4),
+          inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+      }
+      .hero-scene-bg {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          ellipse 60% 60% at 50% 50%,
+          rgba(59, 130, 246, 0.12),
+          transparent 70%
+        );
+      }
+      /* CSS Spline orb */
+      .spline-orb {
+        position: relative;
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        margin: 0 auto 20px;
+      }
+      .spline-orb-outer {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background: conic-gradient(
+          from 0deg,
+          #3b82f6,
+          #6366f1,
+          #22d3ee,
+          #3b82f6
+        );
+        animation: orbRotate 8s linear infinite;
+        box-shadow: 0 0 60px rgba(59, 130, 246, 0.55),
+          0 0 120px rgba(99, 102, 241, 0.22);
+      }
+      .spline-orb-inner {
+        position: absolute;
+        inset: 8px;
+        border-radius: 50%;
+        background: rgba(7, 7, 16, 0.88);
+      }
+      .spline-orb-shine {
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle at 35% 35%,
+          rgba(255, 255, 255, 0.18),
+          transparent 55%
+        );
+      }
+      .spline-orb-label {
+        font-size: 11px;
+        color: rgba(248, 250, 252, 0.25);
+        text-align: center;
+        letter-spacing: 0.08em;
+      }
+      /* Real Spline viewer fallback wrapper */
+      .spline-embed {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        inset: 0;
+      }
+      .spline-embed spline-viewer {
+        width: 100%;
+        height: 100%;
+      }
+
+      /* ═══════════════════════════════════════════
+       SPLINE GALLERY
+    ═══════════════════════════════════════════ */
+      #spline {
+        padding: 96px 80px;
+      }
+      .gallery-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+      }
+      .gallery-card {
+        border-radius: var(--r-xl);
+        overflow: hidden;
+        background: var(--glass);
+        border: 1px solid var(--border);
+        transition: all var(--tr);
+        cursor: pointer;
+      }
+      .gallery-card:hover {
+        transform: translateY(-6px) scale(1.01);
+        border-color: var(--border-h);
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4),
+          0 0 40px rgba(59, 130, 246, 0.15);
+      }
+      .gallery-scene {
+        height: 260px;
+        position: relative;
+        overflow: hidden;
+      }
+      .gallery-scene spline-viewer {
+        width: 100%;
+        height: 100%;
+        pointer-events: auto;
+      }
+      .gallery-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(7, 7, 16, 0.45);
+        backdrop-filter: blur(2px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity var(--tr);
+      }
+      .gallery-card:hover .gallery-overlay {
+        opacity: 1;
+      }
+      .gallery-footer {
+        padding: 14px 20px;
+        background: rgba(7, 7, 16, 0.75);
+        border-top: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .gallery-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text);
+        margin-bottom: 2px;
+      }
+      .gallery-meta {
+        font-size: 11px;
+        color: var(--text-d);
+      }
+
+      /* CSS-animated Spline-like scenes */
+      .scene-bg {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .scene-orb-bg {
+        background: radial-gradient(
+          ellipse at 50% 50%,
+          rgba(59, 130, 246, 0.15),
+          transparent 70%
+        );
+      }
+      .scene-neural-bg {
+        background: radial-gradient(
+          ellipse at 50% 50%,
+          rgba(6, 182, 212, 0.08),
+          transparent 70%
+        );
+      }
+      .scene-liquid-bg {
+        background: radial-gradient(
+          ellipse at 50% 50%,
+          rgba(99, 102, 241, 0.15),
+          transparent 70%
+        );
+      }
+      .scene-grid-bg {
+        background: radial-gradient(
+          ellipse at 50% 60%,
+          rgba(6, 182, 212, 0.1),
+          transparent 70%
+        );
+        overflow: hidden;
+      }
+      .scene-particle-bg {
+        background: radial-gradient(
+          ellipse at 50% 80%,
+          rgba(192, 132, 252, 0.1),
+          transparent 70%
+        );
+        position: relative;
+        overflow: hidden;
+      }
+      .scene-cube-bg {
+        background: radial-gradient(
+          ellipse at 50% 50%,
+          rgba(59, 130, 246, 0.1),
+          transparent 70%
+        );
+        perspective: 400px;
+      }
+
+      /* CSS Orb */
+      .css-orb-wrap {
+        position: relative;
+        width: 100px;
+        height: 100px;
+      }
+      .css-orb-ring {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background: conic-gradient(
+          from 0deg,
+          #3b82f6,
+          #6366f1,
+          #22d3ee,
+          #3b82f6
+        );
+        animation: orbRotate 6s linear infinite;
+        box-shadow: 0 0 40px rgba(59, 130, 246, 0.5);
+      }
+      .css-orb-core {
+        position: absolute;
+        inset: 8px;
+        border-radius: 50%;
+        background: #070710;
+      }
+      .css-orb-shine {
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle at 35% 30%,
+          rgba(255, 255, 255, 0.2),
+          transparent 55%
+        );
+      }
+
+      /* CSS Liquid */
+      .css-liquid {
+        width: 90px;
+        height: 90px;
+        background: linear-gradient(
+          135deg,
+          rgba(99, 102, 241, 0.85),
+          rgba(6, 182, 212, 0.85)
+        );
+        animation: liquidMorph 6s ease-in-out infinite;
+        box-shadow: 0 0 40px rgba(99, 102, 241, 0.4);
+      }
+
+      /* CSS Grid 3D */
+      .css-grid-3d {
+        width: 200px;
+        height: 140px;
+        position: relative;
+        animation: gridShift 4s ease-in-out infinite alternate;
+        transform: perspective(300px) rotateX(25deg);
+      }
+      .css-grid-3d .h-line {
+        position: absolute;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(6, 182, 212, 0.55),
+          transparent
+        );
+      }
+      .css-grid-3d .v-line {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 1px;
+        background: linear-gradient(
+          180deg,
+          transparent,
+          rgba(6, 182, 212, 0.55),
+          transparent
+        );
+      }
+
+      /* CSS Particle */
+      .css-particle {
+        position: absolute;
+        border-radius: 50%;
+        animation: ptclUp linear infinite;
+      }
+
+      /* CSS Cube */
+      .css-cube-scene {
+        transform-style: preserve-3d;
+        animation: cubeRotate 8s linear infinite;
+        position: relative;
+      }
+      .css-cube-face {
+        position: absolute;
+        border: 1px solid rgba(99, 130, 246, 0.35);
+        backdrop-filter: blur(4px);
+      }
+
+      /* ═══════════════════════════════════════════
+       CODEPEN LAB
+    ═══════════════════════════════════════════ */
+      #codepen {
+        padding: 96px 80px;
+      }
+      .codepen-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+      }
+      .codepen-card {
+        border-radius: var(--r-xl);
+        overflow: hidden;
+        background: var(--glass);
+        border: 1px solid var(--border);
+        transition: all var(--tr);
+      }
+      .codepen-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4),
+          0 0 40px rgba(99, 102, 241, 0.12);
+      }
+      .codepen-chrome {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 16px;
+        background: rgba(7, 7, 16, 0.65);
+        border-bottom: 1px solid var(--border);
+      }
+      .codepen-dots {
+        display: flex;
+        gap: 6px;
+      }
+      .codepen-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .codepen-embed {
+        height: 300px;
+        position: relative;
+      }
+      .codepen-embed iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+        display: block;
+      }
+      /* CSS demo placeholders */
+      .demo-glass {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        background: linear-gradient(
+          135deg,
+          rgba(59, 130, 246, 0.08),
+          rgba(99, 102, 241, 0.08)
+        );
+      }
+      .demo-glass-card {
+        width: 200px;
+        height: 120px;
+        background: rgba(255, 255, 255, 0.07);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 20px;
+        backdrop-filter: blur(20px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+      .demo-glass-icon {
+        font-size: 28px;
+        opacity: 0.7;
+      }
+      .demo-glass-label {
+        font-size: 11px;
+        color: var(--text-d);
+      }
+      .demo-flip {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        background: radial-gradient(
+          ellipse at 50% 50%,
+          rgba(99, 102, 241, 0.1),
+          transparent 70%
+        );
+        perspective: 600px;
+      }
+      .demo-flip-card {
+        width: 160px;
+        height: 100px;
+        transform-style: preserve-3d;
+        transform: rotateY(20deg);
+        transition: transform 0.6s;
+      }
+      .demo-flip-card:hover {
+        transform: rotateY(180deg);
+      }
+      .demo-flip-face {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 12px;
+        backface-visibility: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+      }
+      .demo-flip-front {
+        background: linear-gradient(
+          135deg,
+          rgba(99, 102, 241, 0.7),
+          rgba(59, 130, 246, 0.7)
+        );
+      }
+      .demo-flip-back {
+        background: linear-gradient(
+          135deg,
+          rgba(6, 182, 212, 0.7),
+          rgba(99, 102, 241, 0.7)
+        );
+        transform: rotateY(180deg);
+      }
+      .demo-neon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        background: #050508;
+      }
+      .demo-neon-text {
+        font-size: 36px;
+        font-weight: 900;
+        color: var(--cyan4);
+        letter-spacing: -0.02em;
+        animation: neonPulse 2s ease-in-out infinite;
+        font-family: var(--font);
+      }
+      .demo-loader {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        background: var(--bg);
+        gap: 16px;
+      }
+      .demo-dot {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+      }
+
+      /* ═══════════════════════════════════════════
+       DESIGN SYSTEM
+    ═══════════════════════════════════════════ */
+      #penpot {
+        padding: 96px 80px;
+      }
+      .design-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+      }
+      .design-card {
+        border-radius: var(--r-xl);
+        padding: 24px;
+        background: var(--glass);
+        border: 1px solid var(--border);
+        backdrop-filter: var(--blur);
+        -webkit-backdrop-filter: var(--blur);
+      }
+      .design-card-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-d);
+        margin-bottom: 16px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+      .color-swatch-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 10px;
+      }
+      .color-swatch {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        flex-shrink: 0;
+      }
+      .color-name {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text);
+      }
+      .color-hex {
+        font-size: 11px;
+        color: var(--text-d);
+        margin-left: auto;
+      }
+      .type-row {
+        display: flex;
+        align-items: baseline;
+        gap: 12px;
+        margin-bottom: 12px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--border);
+      }
+      .type-meta {
+        font-size: 10px;
+        color: var(--text-d);
+        margin-left: auto;
+        flex-shrink: 0;
+      }
+      .spacing-row {
+        display: flex;
+        align-items: flex-end;
+        gap: 10px;
+      }
+      .spacing-block {
+        background: rgba(59, 130, 246, 0.35);
+        border-radius: 4px;
+        flex-shrink: 0;
+      }
+      .radius-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 12px;
+      }
+      .radius-swatch {
+        width: 38px;
+        height: 38px;
+        background: rgba(59, 130, 246, 0.15);
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .elev-card {
+        padding: 14px;
+        border-radius: var(--r-md);
+        margin-bottom: 10px;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid var(--border);
+      }
+      .progress-bar {
+        height: 4px;
+        background: rgba(255, 255, 255, 0.06);
+        border-radius: 99px;
+        overflow: hidden;
+        margin-top: 4px;
+      }
+      .progress-fill {
+        height: 100%;
+        border-radius: 99px;
+        background: linear-gradient(90deg, var(--blue5), var(--ind5));
+        box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
+      }
+
+      /* Figma embed card */
+      .figma-embed-card {
+        border-radius: var(--r-xl);
+        overflow: hidden;
+        background: var(--glass);
+        border: 1px solid var(--border);
+      }
+      .figma-embed-card iframe {
+        width: 100%;
+        border: none;
+        display: block;
+      }
+      .figma-card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 20px;
+        background: rgba(7, 7, 16, 0.7);
+        border-bottom: 1px solid var(--border);
+      }
+
+      /* ═══════════════════════════════════════════
+       REACT PLAYGROUND (Vanilla JS)
+    ═══════════════════════════════════════════ */
+      #playground {
+        padding: 96px 80px;
+      }
+      .playground-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 24px;
+      }
+      .pg-card {
+        border-radius: var(--r-xl);
+        overflow: hidden;
+        background: var(--glass);
+        border: 1px solid var(--border);
+      }
+      .pg-header {
+        padding: 16px 24px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .pg-title {
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        color: var(--text-d);
+        text-transform: uppercase;
+      }
+      .pg-meta {
+        font-size: 10px;
+        color: rgba(248, 250, 252, 0.18);
+      }
+      .pg-body {
+        padding: 24px;
+      }
+
+      /* Toggles */
+      .toggle-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 16px;
+        border-radius: var(--r-md);
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        margin-bottom: 8px;
+        cursor: pointer;
+        user-select: none;
+        transition: background var(--tr);
+      }
+      .toggle-row:hover {
+        background: rgba(255, 255, 255, 0.06);
+      }
+      .toggle-label {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text-m);
+      }
+      .toggle-track {
+        width: 44px;
+        height: 24px;
+        border-radius: 99px;
+        position: relative;
+        flex-shrink: 0;
+        transition: all var(--tr-spring);
+        background: rgba(255, 255, 255, 0.1);
+      }
+      .toggle-track.on {
+        background: linear-gradient(135deg, var(--blue5), var(--ind5));
+        box-shadow: 0 0 16px rgba(59, 130, 246, 0.4);
+      }
+      .toggle-thumb {
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #fff;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+        transition: left var(--tr-spring);
+      }
+      .toggle-track.on .toggle-thumb {
+        left: 22px;
+      }
+
+      /* Tabs */
+      .tabs-list {
+        display: flex;
+        gap: 2px;
+        padding: 4px;
+        border-radius: var(--r-md);
+        background: rgba(255, 255, 255, 0.04);
+        margin-bottom: 16px;
+      }
+      .tab-btn {
+        flex: 1;
+        padding: 8px 12px;
+        border-radius: 10px;
+        border: none;
+        cursor: pointer;
+        background: transparent;
+        color: var(--text-d);
+        font-size: 13px;
+        font-weight: 500;
+        font-family: var(--font);
+        transition: all var(--tr);
+      }
+      .tab-btn.active {
+        background: rgba(59, 130, 246, 0.2);
+        color: var(--blue4);
+        box-shadow: 0 0 16px rgba(59, 130, 246, 0.1);
+      }
+      .tab-btn:not(.active):hover {
+        background: rgba(255, 255, 255, 0.06);
+        color: var(--text-m);
+      }
+      .tab-content {
+        padding: 16px;
+        border-radius: var(--r-md);
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid var(--border);
+        font-size: 13px;
+        color: var(--text-m);
+        line-height: 1.7;
+      }
+
+      /* Modal */
+      .modal-trigger-wrap {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+      }
+      .modal-trigger-note {
+        font-size: 12px;
+        color: rgba(248, 250, 252, 0.25);
+        text-align: center;
+      }
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 9000;
+        background: rgba(0, 0, 0, 0.75);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: bdrIn 0.2s ease forwards;
+      }
+      .modal-box {
+        width: 90%;
+        max-width: 440px;
+        background: rgba(13, 13, 26, 0.97);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: var(--r-2xl);
+        padding: 32px;
+        position: relative;
+        box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6),
+          0 0 60px rgba(59, 130, 246, 0.1);
+        animation: slideIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      }
+      .modal-close {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: var(--text-m);
+        cursor: pointer;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--font);
+        transition: background var(--tr);
+      }
+      .modal-close:hover {
+        background: rgba(255, 255, 255, 0.12);
+        color: var(--text);
+      }
+      .modal-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, var(--blue5), var(--ind5));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        margin-bottom: 20px;
+      }
+      .modal-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 10px;
+      }
+      .modal-body {
+        font-size: 14px;
+        color: var(--text-m);
+        line-height: 1.7;
+        margin-bottom: 28px;
+      }
+      .modal-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+      }
+      .btn-modal-cancel {
+        padding: 10px 20px;
+        border-radius: var(--r-md);
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid var(--border);
+        color: var(--text-m);
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        font-family: var(--font);
+        transition: background var(--tr);
+      }
+      .btn-modal-cancel:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--text);
+      }
+      .btn-modal-confirm {
+        padding: 10px 20px;
+        border-radius: var(--r-md);
+        background: linear-gradient(135deg, var(--blue5), var(--ind5));
+        border: none;
+        color: #fff;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        font-family: var(--font);
+        box-shadow: 0 4px 16px rgba(59, 130, 246, 0.4);
+      }
+
+      /* Dashboard */
+      .metric-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+      .metric-card {
+        padding: 12px 14px;
+        border-radius: var(--r-md);
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--border);
+      }
+      .metric-label {
+        font-size: 10px;
+        color: var(--text-d);
+        margin-bottom: 4px;
+      }
+      .metric-value {
+        font-size: 22px;
+        font-weight: 800;
+        color: var(--text);
+        letter-spacing: -0.02em;
+        margin-bottom: 4px;
+      }
+      .metric-change {
+        font-size: 10px;
+        font-weight: 700;
+        padding: 2px 6px;
+        border-radius: 99px;
+        display: inline-block;
+      }
+      .metric-up {
+        background: rgba(52, 211, 153, 0.12);
+        color: #34d399;
+      }
+      .metric-down {
+        background: rgba(248, 113, 113, 0.12);
+        color: #f87171;
+      }
+      .bar-chart {
+        display: flex;
+        align-items: flex-end;
+        gap: 8px;
+        height: 80px;
+      }
+      .bar-col {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+      }
+      .bar {
+        width: 100%;
+        border-radius: 4px 4px 0 0;
+        background: linear-gradient(
+          to top,
+          rgba(59, 130, 246, 0.55),
+          rgba(99, 102, 241, 0.85)
+        );
+        transition: all var(--tr);
+        transform-origin: bottom;
+      }
+      .bar:hover {
+        background: linear-gradient(to top, #3b82f6, #22d3ee);
+        box-shadow: 0 0 16px rgba(59, 130, 246, 0.4);
+      }
+      .bar-label {
+        font-size: 9px;
+        color: var(--text-d);
+      }
+
+      /* ═══════════════════════════════════════════
+       FOOTER
+    ═══════════════════════════════════════════ */
+      footer {
+        padding: 64px 80px;
+        border-top: 1px solid var(--border);
+        text-align: center;
+        position: relative;
+      }
+      .footer-glow {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60%;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(59, 130, 246, 0.45),
+          transparent
+        );
+      }
+      .footer-logo {
+        font-size: 24px;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        background: linear-gradient(135deg, var(--blue4), var(--ind4));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 8px;
+      }
+      .footer-tagline {
+        font-size: 13px;
+        color: var(--text-d);
+        margin-bottom: 24px;
+      }
+      .footer-links {
+        display: flex;
+        gap: 32px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .footer-link {
+        font-size: 13px;
+        color: var(--text-d);
+        cursor: pointer;
+        transition: color var(--tr);
+        text-decoration: none;
+      }
+      .footer-link:hover {
+        color: var(--blue4);
+      }
+
+      /* ═══════════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════════ */
+      @media (max-width: 1024px) {
+        .gallery-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .design-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      @media (max-width: 768px) {
+        section {
+          padding: 64px 24px;
+        }
+        #hero {
+          padding: 64px 24px;
+        }
+        footer {
+          padding: 48px 24px;
+        }
+        .gallery-grid,
+        .codepen-grid,
+        .design-grid,
+        .playground-grid {
+          grid-template-columns: 1fr;
+        }
+        .hero-scene-glass {
+          height: 240px;
+        }
+        .dock-nav {
+          bottom: 16px;
+          padding: 6px 8px;
+        }
+        .dock-item {
+          padding: 6px 10px;
+          font-size: 10px;
+        }
+      }
+      @media (max-width: 480px) {
+        .dock-item span:last-child {
+          display: none;
+        }
+        .metric-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* ── Bottom nav spacing ── */
+      .nav-spacer {
+        height: 88px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ══════════════════════════════════════
+       DOCK NAVIGATION
+  ══════════════════════════════════════ -->
+    <nav class="dock-nav" aria-label="Main navigation">
+      <button
+        class="dock-item active"
+        onclick="scrollTo('hero')"
+        data-section="hero"
+      >
+        <span class="dock-icon">⌂</span><span>Home</span>
+      </button>
+      <button
+        class="dock-item"
+        onclick="scrollTo('spline')"
+        data-section="spline"
+      >
+        <span class="dock-icon">◉</span><span>Spline</span>
+      </button>
+      <button
+        class="dock-item"
+        onclick="scrollTo('codepen')"
+        data-section="codepen"
+      >
+        <span class="dock-icon">⌨</span><span>Code</span>
+      </button>
+      <button
+        class="dock-item"
+        onclick="scrollTo('penpot')"
+        data-section="penpot"
+      >
+        <span class="dock-icon">◈</span><span>Design</span>
+      </button>
+      <button
+        class="dock-item"
+        onclick="scrollTo('playground')"
+        data-section="playground"
+      >
+        <span class="dock-icon">◇</span><span>Play</span>
+      </button>
+    </nav>
+
+    <!-- ══════════════════════════════════════
+       HERO
+  ══════════════════════════════════════ -->
+    <section id="hero">
+      <div class="hero-bg"></div>
+      <div class="hero-grid"></div>
+      <div class="hero-orb hero-orb-1"></div>
+      <div class="hero-orb hero-orb-2"></div>
+      <div class="hero-orb hero-orb-3"></div>
+
+      <!-- Floating particles -->
+      <div style="position: absolute; inset: 0; pointer-events: none">
+        <span
+          style="
+            position: absolute;
+            left: 12%;
+            top: 18%;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--blue4);
+            box-shadow: 0 0 12px var(--blue4);
+            animation: particleFlt 6s ease-in-out infinite;
+          "
+        ></span>
+        <span
+          style="
+            position: absolute;
+            left: 85%;
+            top: 14%;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--ind4);
+            box-shadow: 0 0 10px var(--ind4);
+            animation: particleFlt 8s ease-in-out infinite;
+            animation-delay: 1.2s;
+          "
+        ></span>
+        <span
+          style="
+            position: absolute;
+            left: 8%;
+            top: 65%;
+            width: 3px;
+            height: 3px;
+            border-radius: 50%;
+            background: var(--cyan4);
+            box-shadow: 0 0 8px var(--cyan4);
+            animation: particleFlt 7s ease-in-out infinite;
+            animation-delay: 2.4s;
+          "
+        ></span>
+        <span
+          style="
+            position: absolute;
+            left: 90%;
+            top: 72%;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--blue4);
+            box-shadow: 0 0 14px var(--blue4);
+            animation: particleFlt 9s ease-in-out infinite;
+            animation-delay: 0.8s;
+          "
+        ></span>
+        <span
+          style="
+            position: absolute;
+            left: 45%;
+            top: 8%;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--purp4);
+            box-shadow: 0 0 10px var(--purp4);
+            animation: particleFlt 6.5s ease-in-out infinite;
+            animation-delay: 3.2s;
+          "
+        ></span>
+      </div>
+
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="hero-badge-dot"></span>
+          <span class="hero-badge-text">INTERACTIVE SPATIAL CANVAS</span>
+        </div>
+
+        <h1 class="hero-headline">Interactive<br />Spatial Canvas</h1>
+
+        <p class="hero-subtitle">
+          A premium canvas for Spline 3D scenes, CodePen demos, Figma
+          prototypes, and interactive components — all in one spatial
+          experience.
+        </p>
+
+        <div class="hero-actions">
+          <button class="btn btn-primary" onclick="scrollTo('spline')">
+            Explore Lab →
+          </button>
+          <button class="btn btn-secondary">View Source ↗</button>
+        </div>
+      </div>
+
+      <!-- Hero 3D Scene (Spline viewer or CSS fallback) -->
+      <div class="hero-scene">
+        <div class="hero-scene-glass">
+          <div class="hero-scene-bg"></div>
+
+          <!--
+          ┌─────────────────────────────────────────────────────┐
+          │  SPLINE EMBED — Replace the CSS placeholder below   │
+          │  with your Spline scene URL:                         │
+          │                                                      │
+          │  <spline-viewer                                      │
+          │    url="https://prod.spline.design/YOUR-ID/         │
+          │          scene.splinecode"                           │
+          │    class="spline-embed">                             │
+          │  </spline-viewer>                                    │
+          └─────────────────────────────────────────────────────┘
+        -->
+          <div style="position: relative; z-index: 1; text-align: center">
+            <div class="spline-orb">
+              <div class="spline-orb-outer"></div>
+              <div class="spline-orb-inner"></div>
+              <div class="spline-orb-shine"></div>
+            </div>
+            <p class="spline-orb-label">
+              spline-viewer · Drop your Spline scene URL here
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+       SPLINE GALLERY
+  ══════════════════════════════════════ -->
+    <section id="spline">
+      <div class="section-inner">
+        <div class="section-header reveal">
+          <p class="section-label">● Spline Gallery</p>
+          <h2 class="section-title">Interactive 3D Scenes</h2>
+          <p class="section-desc">
+            Drop any Spline scene URL into these cards for live 3D embeds
+          </p>
+        </div>
+
+        <div class="gallery-grid">
+          <!-- Card 1: Cosmic Orb — CSS scene (swap for Spline URL) -->
+          <div class="gallery-card reveal">
+            <div class="gallery-scene">
+              <div class="scene-bg scene-orb-bg">
+                <div class="css-orb-wrap">
+                  <div class="css-orb-ring"></div>
+                  <div class="css-orb-core"></div>
+                  <div class="css-orb-shine"></div>
+                </div>
+              </div>
+              <!-- Spline embed slot: <spline-viewer url="YOUR_URL" style="width:100%;height:100%"></spline-viewer> -->
+              <div class="gallery-overlay">
+                <button
+                  class="btn btn-primary"
+                  style="font-size: 13px; padding: 10px 24px"
+                >
+                  Open Scene ↗
+                </button>
+              </div>
+            </div>
+            <div class="gallery-footer">
+              <div>
+                <div class="gallery-title">Cosmic Orb</div>
+                <div class="gallery-meta">3D gradient sphere</div>
+              </div>
+              <span class="chip chip-blue">Spline</span>
+            </div>
+          </div>
+
+          <!-- Card 2: Neural Network — CSS scene -->
+          <div class="gallery-card reveal">
+            <div class="gallery-scene">
+              <div
+                class="scene-bg scene-neural-bg"
+                style="
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+                <svg
+                  viewBox="0 0 300 200"
+                  width="240"
+                  height="160"
+                  style="overflow: visible"
+                >
+                  <line
+                    x1="40"
+                    y1="60"
+                    x2="120"
+                    y2="30"
+                    stroke="rgba(6,182,212,0.35)"
+                    stroke-width="1"
+                  />
+                  <line
+                    x1="40"
+                    y1="60"
+                    x2="80"
+                    y2="120"
+                    stroke="rgba(6,182,212,0.35)"
+                    stroke-width="1"
+                  />
+                  <line
+                    x1="120"
+                    y1="30"
+                    x2="190"
+                    y2="80"
+                    stroke="rgba(6,182,212,0.35)"
+                    stroke-width="1"
+                  />
+                  <line
+                    x1="120"
+                    y1="30"
+                    x2="230"
+                    y2="50"
+                    stroke="rgba(6,182,212,0.35)"
+                    stroke-width="1"
+                  />
+                  <line
+                    x1="190"
+                    y1="80"
+                    x2="260"
+                    y2="120"
+                    stroke="rgba(6,182,212,0.35)"
+                    stroke-width="1"
+                  />
+                  <line
+                    x1="190"
+                    y1="80"
+                    x2="160"
+                    y2="140"
+                    stroke="rgba(6,182,212,0.35)"
+                    stroke-width="1"
+                  />
+                  <line
+                    x1="160"
+                    y1="140"
+                    x2="80"
+                    y2="120"
+                    stroke="rgba(6,182,212,0.35)"
+                    stroke-width="1"
+                  />
+                  <line
+                    x1="80"
+                    y1="120"
+                    x2="50"
+                    y2="170"
+                    stroke="rgba(6,182,212,0.35)"
+                    stroke-width="1"
+                  />
+                  <line
+                    x1="230"
+                    y1="50"
+                    x2="260"
+                    y2="120"
+                    stroke="rgba(6,182,212,0.35)"
+                    stroke-width="1"
+                  />
+                  <line
+                    x1="160"
+                    y1="140"
+                    x2="260"
+                    y2="120"
+                    stroke="rgba(6,182,212,0.35)"
+                    stroke-width="1"
+                  />
+                  <circle cx="40" cy="60" r="5" fill="rgba(6,182,212,0.85)" />
+                  <circle cx="120" cy="30" r="5" fill="rgba(6,182,212,0.85)" />
+                  <circle cx="190" cy="80" r="5" fill="rgba(6,182,212,0.85)" />
+                  <circle cx="160" cy="140" r="5" fill="rgba(6,182,212,0.85)" />
+                  <circle cx="80" cy="120" r="5" fill="rgba(6,182,212,0.85)" />
+                  <circle cx="230" cy="50" r="5" fill="rgba(6,182,212,0.85)" />
+                  <circle cx="260" cy="120" r="5" fill="rgba(6,182,212,0.85)" />
+                  <circle cx="50" cy="170" r="5" fill="rgba(6,182,212,0.85)" />
+                </svg>
+              </div>
+              <div class="gallery-overlay">
+                <button
+                  class="btn btn-primary"
+                  style="font-size: 13px; padding: 10px 24px"
+                >
+                  Open Scene ↗
+                </button>
+              </div>
+            </div>
+            <div class="gallery-footer">
+              <div>
+                <div class="gallery-title">Neural Network</div>
+                <div class="gallery-meta">Connected graph mesh</div>
+              </div>
+              <span class="chip chip-cyan">WebGL</span>
+            </div>
+          </div>
+
+          <!-- Card 3: Liquid Metal — CSS blob -->
+          <div class="gallery-card reveal">
+            <div class="gallery-scene">
+              <div class="scene-bg scene-liquid-bg">
+                <div class="css-liquid"></div>
+              </div>
+              <div class="gallery-overlay">
+                <button
+                  class="btn btn-primary"
+                  style="font-size: 13px; padding: 10px 24px"
+                >
+                  Open Scene ↗
+                </button>
+              </div>
+            </div>
+            <div class="gallery-footer">
+              <div>
+                <div class="gallery-title">Liquid Metal</div>
+                <div class="gallery-meta">Morphing CSS blob</div>
+              </div>
+              <span class="chip chip-ind">CSS</span>
+            </div>
+          </div>
+
+          <!-- Card 4: Digital Grid — 3D CSS perspective -->
+          <div class="gallery-card reveal">
+            <div class="gallery-scene">
+              <div class="scene-bg scene-grid-bg">
+                <div class="css-grid-3d">
+                  <div class="h-line" style="top: 0%"></div>
+                  <div class="h-line" style="top: 14.3%"></div>
+                  <div class="h-line" style="top: 28.6%"></div>
+                  <div class="h-line" style="top: 42.9%"></div>
+                  <div class="h-line" style="top: 57.1%"></div>
+                  <div class="h-line" style="top: 71.4%"></div>
+                  <div class="h-line" style="top: 85.7%"></div>
+                  <div class="h-line" style="top: 100%"></div>
+                  <div class="v-line" style="left: 0%"></div>
+                  <div class="v-line" style="left: 14.3%"></div>
+                  <div class="v-line" style="left: 28.6%"></div>
+                  <div class="v-line" style="left: 42.9%"></div>
+                  <div class="v-line" style="left: 57.1%"></div>
+                  <div class="v-line" style="left: 71.4%"></div>
+                  <div class="v-line" style="left: 85.7%"></div>
+                  <div class="v-line" style="left: 100%"></div>
+                </div>
+              </div>
+              <div class="gallery-overlay">
+                <button
+                  class="btn btn-primary"
+                  style="font-size: 13px; padding: 10px 24px"
+                >
+                  Open Scene ↗
+                </button>
+              </div>
+            </div>
+            <div class="gallery-footer">
+              <div>
+                <div class="gallery-title">Digital Grid</div>
+                <div class="gallery-meta">3D perspective mesh</div>
+              </div>
+              <span class="chip chip-cyan">WebGL</span>
+            </div>
+          </div>
+
+          <!-- Card 5: Particle Storm -->
+          <div class="gallery-card reveal">
+            <div class="gallery-scene">
+              <div class="scene-bg scene-particle-bg" id="particle-scene">
+                <!-- Particles injected by JS -->
+              </div>
+              <div class="gallery-overlay">
+                <button
+                  class="btn btn-primary"
+                  style="font-size: 13px; padding: 10px 24px"
+                >
+                  Open Scene ↗
+                </button>
+              </div>
+            </div>
+            <div class="gallery-footer">
+              <div>
+                <div class="gallery-title">Particle Storm</div>
+                <div class="gallery-meta">Animated particles</div>
+              </div>
+              <span class="chip chip-purple">Canvas</span>
+            </div>
+          </div>
+
+          <!-- Card 6: Geo Flow — CSS 3D cube -->
+          <div class="gallery-card reveal">
+            <div class="gallery-scene">
+              <div class="scene-bg scene-cube-bg">
+                <div style="transform-style: preserve-3d">
+                  <div
+                    class="css-cube-scene"
+                    style="width: 70px; height: 70px; position: relative"
+                  >
+                    <div
+                      class="css-cube-face"
+                      style="
+                        width: 70px;
+                        height: 70px;
+                        background: rgba(59, 130, 246, 0.7);
+                        transform: translateZ(35px);
+                      "
+                    ></div>
+                    <div
+                      class="css-cube-face"
+                      style="
+                        width: 70px;
+                        height: 70px;
+                        background: rgba(59, 130, 246, 0.35);
+                        transform: rotateY(180deg) translateZ(35px);
+                      "
+                    ></div>
+                    <div
+                      class="css-cube-face"
+                      style="
+                        width: 70px;
+                        height: 70px;
+                        background: rgba(59, 130, 246, 0.5);
+                        transform: rotateY(90deg) translateZ(35px);
+                      "
+                    ></div>
+                    <div
+                      class="css-cube-face"
+                      style="
+                        width: 70px;
+                        height: 70px;
+                        background: rgba(59, 130, 246, 0.28);
+                        transform: rotateY(-90deg) translateZ(35px);
+                      "
+                    ></div>
+                    <div
+                      class="css-cube-face"
+                      style="
+                        width: 70px;
+                        height: 70px;
+                        background: rgba(99, 102, 241, 0.6);
+                        transform: rotateX(90deg) translateZ(35px);
+                      "
+                    ></div>
+                    <div
+                      class="css-cube-face"
+                      style="
+                        width: 70px;
+                        height: 70px;
+                        background: rgba(99, 102, 241, 0.32);
+                        transform: rotateX(-90deg) translateZ(35px);
+                      "
+                    ></div>
+                  </div>
+                </div>
+              </div>
+              <div class="gallery-overlay">
+                <button
+                  class="btn btn-primary"
+                  style="font-size: 13px; padding: 10px 24px"
+                >
+                  Open Scene ↗
+                </button>
+              </div>
+            </div>
+            <div class="gallery-footer">
+              <div>
+                <div class="gallery-title">Geo Flow</div>
+                <div class="gallery-meta">Rotating 3D cube</div>
+              </div>
+              <span class="chip chip-blue">Three.js</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+       CODEPEN LAB
+  ══════════════════════════════════════ -->
+    <section id="codepen">
+      <div class="section-inner">
+        <div class="section-header reveal">
+          <p class="section-label">● CodePen Lab</p>
+          <h2 class="section-title">Code Experiments</h2>
+          <p class="section-desc">
+            Live CSS demos — swap in any CodePen embed URL
+          </p>
+        </div>
+
+        <div class="codepen-grid">
+          <!-- CodePen Card 1: Glass Morphism -->
+          <div class="codepen-card glass-card reveal">
+            <div class="codepen-chrome">
+              <div class="codepen-dots">
+                <div class="codepen-dot" style="background: #ff5f57"></div>
+                <div class="codepen-dot" style="background: #febc2e"></div>
+                <div class="codepen-dot" style="background: #28c840"></div>
+              </div>
+              <span
+                style="font-size: 12px; font-weight: 600; color: var(--text-m)"
+                >Glass Morphism</span
+              >
+              <span class="chip chip-blue" style="font-size: 10px">CSS</span>
+            </div>
+            <div class="codepen-embed">
+              <!--
+              CODEPEN EMBED — Replace the CSS demo below with a real embed:
+              <iframe src="https://codepen.io/USERNAME/embed/PEN_ID/?default-tab=result&theme-id=dark" loading="lazy" allowfullscreen></iframe>
+            -->
+              <div class="demo-glass">
+                <div class="demo-glass-card">
+                  <div class="demo-glass-icon">◉</div>
+                  <div class="demo-glass-label">
+                    backdrop-filter: blur(20px)
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CodePen Card 2: 3D Card Flip -->
+          <div class="codepen-card glass-card reveal">
+            <div class="codepen-chrome">
+              <div class="codepen-dots">
+                <div class="codepen-dot" style="background: #ff5f57"></div>
+                <div class="codepen-dot" style="background: #febc2e"></div>
+                <div class="codepen-dot" style="background: #28c840"></div>
+              </div>
+              <span
+                style="font-size: 12px; font-weight: 600; color: var(--text-m)"
+                >3D Card Flip</span
+              >
+              <span class="chip chip-ind" style="font-size: 10px">CSS</span>
+            </div>
+            <div class="codepen-embed">
+              <div class="demo-flip">
+                <div class="demo-flip-card" id="flip-card">
+                  <div class="demo-flip-face demo-flip-front">◈</div>
+                  <div class="demo-flip-face demo-flip-back">◉</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CodePen Card 3: Neon Text FX -->
+          <div class="codepen-card glass-card reveal">
+            <div class="codepen-chrome">
+              <div class="codepen-dots">
+                <div class="codepen-dot" style="background: #ff5f57"></div>
+                <div class="codepen-dot" style="background: #febc2e"></div>
+                <div class="codepen-dot" style="background: #28c840"></div>
+              </div>
+              <span
+                style="font-size: 12px; font-weight: 600; color: var(--text-m)"
+                >Neon Text FX</span
+              >
+              <span class="chip chip-cyan" style="font-size: 10px">CSS</span>
+            </div>
+            <div class="codepen-embed">
+              <div class="demo-neon">
+                <span class="demo-neon-text">SPATIAL</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- CodePen Card 4: CSS Loader -->
+          <div class="codepen-card glass-card reveal">
+            <div class="codepen-chrome">
+              <div class="codepen-dots">
+                <div class="codepen-dot" style="background: #ff5f57"></div>
+                <div class="codepen-dot" style="background: #febc2e"></div>
+                <div class="codepen-dot" style="background: #28c840"></div>
+              </div>
+              <span
+                style="font-size: 12px; font-weight: 600; color: var(--text-m)"
+                >CSS Loader</span
+              >
+              <span class="chip chip-purple" style="font-size: 10px">CSS</span>
+            </div>
+            <div class="codepen-embed">
+              <div class="demo-loader">
+                <div
+                  class="demo-dot"
+                  style="
+                    background: var(--blue4);
+                    box-shadow: 0 0 12px var(--blue4);
+                    animation: pulse 1.2s ease-in-out infinite;
+                  "
+                ></div>
+                <div
+                  class="demo-dot"
+                  style="
+                    background: var(--ind4);
+                    box-shadow: 0 0 12px var(--ind4);
+                    animation: pulse 1.2s ease-in-out infinite;
+                    animation-delay: 0.2s;
+                  "
+                ></div>
+                <div
+                  class="demo-dot"
+                  style="
+                    background: var(--cyan4);
+                    box-shadow: 0 0 12px var(--cyan4);
+                    animation: pulse 1.2s ease-in-out infinite;
+                    animation-delay: 0.4s;
+                  "
+                ></div>
+                <div
+                  class="demo-dot"
+                  style="
+                    background: var(--purp4);
+                    box-shadow: 0 0 12px var(--purp4);
+                    animation: pulse 1.2s ease-in-out infinite;
+                    animation-delay: 0.6s;
+                  "
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+       DESIGN SYSTEM (Penpot / Figma)
+  ══════════════════════════════════════ -->
+    <section id="penpot">
+      <div class="section-inner">
+        <div class="section-header reveal">
+          <p class="section-label">● Design System</p>
+          <h2 class="section-title">Visual Tokens</h2>
+          <p class="section-desc">
+            Colors, typography, spacing, and component tokens
+          </p>
+        </div>
+
+        <div class="design-grid">
+          <!-- Color Palette -->
+          <div class="design-card glass-card reveal">
+            <div class="design-card-label">Color Palette</div>
+            <div class="color-swatch-row">
+              <div
+                class="color-swatch"
+                style="
+                  background: #3b82f6;
+                  box-shadow: 0 0 12px rgba(59, 130, 246, 0.4);
+                "
+              ></div>
+              <span class="color-name">Blue 500</span
+              ><span class="color-hex">#3b82f6</span>
+            </div>
+            <div class="color-swatch-row">
+              <div
+                class="color-swatch"
+                style="
+                  background: #60a5fa;
+                  box-shadow: 0 0 12px rgba(96, 165, 250, 0.4);
+                "
+              ></div>
+              <span class="color-name">Blue 400</span
+              ><span class="color-hex">#60a5fa</span>
+            </div>
+            <div class="color-swatch-row">
+              <div
+                class="color-swatch"
+                style="
+                  background: #6366f1;
+                  box-shadow: 0 0 12px rgba(99, 102, 241, 0.4);
+                "
+              ></div>
+              <span class="color-name">Indigo 500</span
+              ><span class="color-hex">#6366f1</span>
+            </div>
+            <div class="color-swatch-row">
+              <div
+                class="color-swatch"
+                style="
+                  background: #22d3ee;
+                  box-shadow: 0 0 12px rgba(34, 211, 238, 0.4);
+                "
+              ></div>
+              <span class="color-name">Cyan 400</span
+              ><span class="color-hex">#22d3ee</span>
+            </div>
+            <div class="color-swatch-row">
+              <div
+                class="color-swatch"
+                style="
+                  background: #c084fc;
+                  box-shadow: 0 0 12px rgba(192, 132, 252, 0.4);
+                "
+              ></div>
+              <span class="color-name">Purple 400</span
+              ><span class="color-hex">#c084fc</span>
+            </div>
+          </div>
+
+          <!-- Typography Scale -->
+          <div class="design-card glass-card reveal">
+            <div class="design-card-label">Type Scale</div>
+            <div class="type-row">
+              <span
+                style="
+                  font-size: 40px;
+                  font-weight: 800;
+                  color: var(--text);
+                  line-height: 1;
+                "
+                >Aa</span
+              ><span class="type-meta">72px · Extra Bold</span>
+            </div>
+            <div class="type-row">
+              <span
+                style="font-size: 28px; font-weight: 700; color: var(--text)"
+                >Heading</span
+              ><span class="type-meta">32px · Bold</span>
+            </div>
+            <div class="type-row">
+              <span
+                style="font-size: 18px; font-weight: 500; color: var(--text)"
+                >Body Large</span
+              ><span class="type-meta">18px · Medium</span>
+            </div>
+            <div class="type-row">
+              <span style="font-size: 14px; color: var(--text-m)"
+                >Body Default text goes here</span
+              ><span class="type-meta">14px · Regular</span>
+            </div>
+            <div class="type-row">
+              <span
+                style="
+                  font-size: 11px;
+                  font-weight: 600;
+                  color: var(--blue4);
+                  letter-spacing: 0.1em;
+                "
+                >LABEL TEXT</span
+              ><span class="type-meta">11px · Semi Bold</span>
+            </div>
+          </div>
+
+          <!-- Spacing + Radii -->
+          <div class="design-card glass-card reveal">
+            <div class="design-card-label">Spacing</div>
+            <div class="spacing-row" style="margin-bottom: 24px">
+              <div class="spacing-block" style="width: 4px; height: 24px"></div>
+              <div class="spacing-block" style="width: 8px; height: 32px"></div>
+              <div
+                class="spacing-block"
+                style="width: 16px; height: 40px"
+              ></div>
+              <div
+                class="spacing-block"
+                style="width: 24px; height: 48px"
+              ></div>
+              <div
+                class="spacing-block"
+                style="width: 32px; height: 56px"
+              ></div>
+              <div
+                class="spacing-block"
+                style="width: 48px; height: 64px"
+              ></div>
+            </div>
+            <div class="design-card-label">Border Radius</div>
+            <div class="radius-row">
+              <div class="radius-swatch" style="border-radius: 4px">
+                <span style="font-size: 8px; color: var(--blue4)">4</span>
+              </div>
+              <div class="radius-swatch" style="border-radius: 8px">
+                <span style="font-size: 8px; color: var(--blue4)">8</span>
+              </div>
+              <div class="radius-swatch" style="border-radius: 12px">
+                <span style="font-size: 8px; color: var(--blue4)">12</span>
+              </div>
+              <div class="radius-swatch" style="border-radius: 16px">
+                <span style="font-size: 8px; color: var(--blue4)">16</span>
+              </div>
+              <div class="radius-swatch" style="border-radius: 24px">
+                <span style="font-size: 8px; color: var(--blue4)">24</span>
+              </div>
+              <div class="radius-swatch" style="border-radius: 99px">
+                <span style="font-size: 8px; color: var(--blue4)">∞</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Figma Embed (swap for real URL) -->
+          <div class="figma-embed-card reveal" style="grid-column: span 3">
+            <div class="figma-card-header">
+              <div style="display: flex; align-items: center; gap: 8px">
+                <span style="font-size: 20px">◈</span>
+                <span
+                  style="font-size: 13px; font-weight: 600; color: var(--text)"
+                  >Figma Design System</span
+                >
+              </div>
+              <span class="chip chip-purple">Figma Embed</span>
+            </div>
+            <!--
+            FIGMA EMBED — Replace with your Figma URL:
+            <iframe
+              style="border:none;width:100%;height:450px;"
+              src="https://www.figma.com/embed?embed_host=share&url=YOUR_FIGMA_FILE_URL"
+              allowfullscreen
+              loading="lazy">
+            </iframe>
+          -->
+            <!-- Placeholder: shows Figma design system color grid -->
+            <div
+              style="
+                height: 200px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: radial-gradient(
+                  ellipse at 50% 50%,
+                  rgba(192, 132, 252, 0.08),
+                  transparent 70%
+                );
+              "
+            >
+              <div
+                style="
+                  display: flex;
+                  gap: 10px;
+                  flex-wrap: wrap;
+                  justify-content: center;
+                  max-width: 600px;
+                "
+              >
+                <a
+                  href="https://www.figma.com/design/bBl9i9h6ddlCjgp4bihqLX"
+                  target="_blank"
+                  rel="noopener"
+                  class="btn btn-primary"
+                  style="
+                    font-size: 13px;
+                    padding: 10px 24px;
+                    text-decoration: none;
+                  "
+                  >Open Figma Design ↗</a
+                >
+                <span
+                  style="
+                    font-size: 13px;
+                    color: var(--text-d);
+                    align-self: center;
+                  "
+                  >figma.com/design/bBl9i9h6ddlCjgp4bihqLX</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+       REACT PLAYGROUND (Vanilla JS)
+  ══════════════════════════════════════ -->
+    <section id="playground">
+      <div class="section-inner">
+        <div class="section-header reveal">
+          <p class="section-label">● React Playground</p>
+          <h2 class="section-title">Interactive Components</h2>
+          <p class="section-desc">
+            Live demos — toggles, tabs, modal, dashboard widget
+          </p>
+        </div>
+
+        <div class="playground-grid">
+          <!-- Toggle Switches -->
+          <div class="pg-card glass-card reveal">
+            <div class="pg-header">
+              <span class="pg-title">Toggle Switches</span>
+              <span class="pg-meta">useState · Vanilla JS</span>
+            </div>
+            <div class="pg-body">
+              <div class="toggle-row" onclick="toggleSwitch(this)">
+                <span class="toggle-label">Dark Mode</span>
+                <div class="toggle-track on">
+                  <div class="toggle-thumb"></div>
+                </div>
+              </div>
+              <div class="toggle-row" onclick="toggleSwitch(this)">
+                <span class="toggle-label">Notifications</span>
+                <div class="toggle-track"><div class="toggle-thumb"></div></div>
+              </div>
+              <div class="toggle-row" onclick="toggleSwitch(this)">
+                <span class="toggle-label">Auto Save</span>
+                <div class="toggle-track on">
+                  <div class="toggle-thumb"></div>
+                </div>
+              </div>
+              <div class="toggle-row" onclick="toggleSwitch(this)">
+                <span class="toggle-label">Live Preview</span>
+                <div class="toggle-track"><div class="toggle-thumb"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab Navigation -->
+          <div class="pg-card glass-card reveal">
+            <div class="pg-header">
+              <span class="pg-title">Tab Navigation</span>
+              <span class="pg-meta">activeTab · Vanilla JS</span>
+            </div>
+            <div class="pg-body">
+              <div class="tabs-list">
+                <button
+                  class="tab-btn active"
+                  onclick="switchTab(this, 'tab-content-0')"
+                  data-group="tabs-1"
+                >
+                  Overview
+                </button>
+                <button
+                  class="tab-btn"
+                  onclick="switchTab(this, 'tab-content-1')"
+                  data-group="tabs-1"
+                >
+                  Analytics
+                </button>
+                <button
+                  class="tab-btn"
+                  onclick="switchTab(this, 'tab-content-2')"
+                  data-group="tabs-1"
+                >
+                  Settings
+                </button>
+              </div>
+              <div class="tab-content" id="tab-content-0">
+                Welcome to Spatial Code Lab. This interactive canvas combines
+                Spline 3D scenes, CodePen demos, Figma prototypes, and React
+                components.
+              </div>
+              <div class="tab-content" id="tab-content-1" style="display: none">
+                Page views: 42,840 · Unique visitors: 12,400 · Avg. session: 3m
+                24s · Bounce rate: 28% · Conversion: 2.8%
+              </div>
+              <div class="tab-content" id="tab-content-2" style="display: none">
+                Configure embed sources, animation settings, theme tokens, and
+                component behavior from this settings panel.
+              </div>
+            </div>
+          </div>
+
+          <!-- Modal Dialog -->
+          <div class="pg-card glass-card reveal">
+            <div class="pg-header">
+              <span class="pg-title">Modal Dialog</span>
+              <span class="pg-meta">backdrop blur · spring anim</span>
+            </div>
+            <div class="pg-body">
+              <div class="modal-trigger-wrap">
+                <button class="btn btn-primary" onclick="openModal()">
+                  Open Modal Dialog
+                </button>
+                <p class="modal-trigger-note">
+                  Glassmorphism modal with backdrop blur &amp; spring animation
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dashboard Widget -->
+          <div class="pg-card glass-card reveal">
+            <div class="pg-header">
+              <span class="pg-title">Dashboard Widget</span>
+              <span class="pg-meta">hover bar · Vanilla JS</span>
+            </div>
+            <div class="pg-body">
+              <div class="metric-grid">
+                <div class="metric-card">
+                  <div class="metric-label">Revenue</div>
+                  <div class="metric-value">$48.2k</div>
+                  <span class="metric-change metric-up">+12.4%</span>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-label">Users</div>
+                  <div class="metric-value">12.4k</div>
+                  <span class="metric-change metric-up">+8.2%</span>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-label">Orders</div>
+                  <div class="metric-value">3.2k</div>
+                  <span class="metric-change metric-down">-2.1%</span>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-label">Conv.</div>
+                  <div class="metric-value">2.8%</div>
+                  <span class="metric-change metric-up">+0.4%</span>
+                </div>
+              </div>
+              <div class="bar-chart">
+                <div class="bar-col">
+                  <div class="bar" style="height: 42%"></div>
+                  <span class="bar-label">M</span>
+                </div>
+                <div class="bar-col">
+                  <div class="bar" style="height: 68%"></div>
+                  <span class="bar-label">T</span>
+                </div>
+                <div class="bar-col">
+                  <div class="bar" style="height: 55%"></div>
+                  <span class="bar-label">W</span>
+                </div>
+                <div class="bar-col">
+                  <div class="bar" style="height: 80%"></div>
+                  <span class="bar-label">T</span>
+                </div>
+                <div class="bar-col">
+                  <div class="bar" style="height: 62%"></div>
+                  <span class="bar-label">F</span>
+                </div>
+                <div class="bar-col">
+                  <div class="bar" style="height: 90%"></div>
+                  <span class="bar-label">S</span>
+                </div>
+                <div class="bar-col">
+                  <div class="bar" style="height: 74%"></div>
+                  <span class="bar-label">S</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+       FOOTER
+  ══════════════════════════════════════ -->
+    <footer>
+      <div class="footer-glow"></div>
+      <div class="footer-logo">Spatial Code Lab</div>
+      <div class="footer-tagline">
+        Built with Spline · Figma · React · Webflow · Framer
+      </div>
+      <div class="footer-links">
+        <a class="footer-link" onclick="scrollTo('hero')">Hero</a>
+        <a class="footer-link" onclick="scrollTo('spline')">Spline Gallery</a>
+        <a class="footer-link" onclick="scrollTo('codepen')">CodePen Lab</a>
+        <a class="footer-link" onclick="scrollTo('penpot')">Design System</a>
+        <a class="footer-link" onclick="scrollTo('playground')">Playground</a>
+      </div>
+    </footer>
+
+    <!-- Dock nav spacer -->
+    <div class="nav-spacer"></div>
+
+    <!-- ══════════════════════════════════════
+       MODAL
+  ══════════════════════════════════════ -->
+    <div
+      class="modal-backdrop"
+      id="modal"
+      style="display: none"
+      onclick="if (event.target === this) closeModal();"
+    >
+      <div class="modal-box">
+        <button class="modal-close" onclick="closeModal()">×</button>
+        <div class="modal-icon">◉</div>
+        <div class="modal-title">Spatial Code Lab</div>
+        <div class="modal-body">
+          This modal is a glassmorphism component with backdrop blur and spring
+          animation. Add any HTML, CSS, JS, or React content here. It works in
+          Webflow, Framer, and standalone sites.
+        </div>
+        <div class="modal-actions">
+          <button class="btn-modal-cancel" onclick="closeModal()">
+            Cancel
+          </button>
+          <button class="btn-modal-confirm" onclick="closeModal()">
+            Confirm
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // ─── SCROLL TO SECTION ───
+      function scrollTo(id) {
+        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+        document.querySelectorAll('.dock-item').forEach(el => {
+          el.classList.toggle('active', el.dataset.section === id);
+        });
+      }
+
+      // ─── SCROLL SPY ───
+      (function () {
+        const sections = ['hero', 'spline', 'codepen', 'penpot', 'playground'];
+        const observer = new IntersectionObserver(
+          entries => {
+            entries.forEach(e => {
+              if (e.isIntersecting) {
+                document.querySelectorAll('.dock-item').forEach(el => {
+                  el.classList.toggle(
+                    'active',
+                    el.dataset.section === e.target.id
+                  );
+                });
+              }
+            });
+          },
+          { threshold: 0.35 }
+        );
+        sections.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) observer.observe(el);
+        });
+      })();
+
+      // ─── SCROLL REVEAL ───
+      (function () {
+        const io = new IntersectionObserver(
+          entries => {
+            entries.forEach(e => {
+              if (e.isIntersecting) {
+                e.target.classList.add('in-view');
+                io.unobserve(e.target);
+              }
+            });
+          },
+          { threshold: 0.1 }
+        );
+        document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+      })();
+
+      // ─── TOGGLE SWITCH ───
+      function toggleSwitch(row) {
+        const track = row.querySelector('.toggle-track');
+        track.classList.toggle('on');
+      }
+
+      // ─── TABS ───
+      function switchTab(btn, contentId) {
+        const group = btn.dataset.group;
+        btn
+          .closest('.pg-body')
+          .querySelectorAll('.tab-btn')
+          .forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        btn
+          .closest('.pg-body')
+          .querySelectorAll('.tab-content')
+          .forEach(c => (c.style.display = 'none'));
+        const el = document.getElementById(contentId);
+        if (el) el.style.display = '';
+      }
+
+      // ─── MODAL ───
+      function openModal() {
+        const m = document.getElementById('modal');
+        m.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+      }
+      function closeModal() {
+        document.getElementById('modal').style.display = 'none';
+        document.body.style.overflow = '';
+      }
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') closeModal();
+      });
+
+      // ─── 3D CARD FLIP (hover toggle) ───
+      const flipCard = document.getElementById('flip-card');
+      if (flipCard) {
+        let flipped = false;
+        setInterval(() => {
+          flipped = !flipped;
+          flipCard.style.transform = flipped
+            ? 'rotateY(180deg)'
+            : 'rotateY(20deg)';
+        }, 2200);
+      }
+
+      // ─── PARTICLE SCENE ───
+      (function () {
+        const container = document.getElementById('particle-scene');
+        if (!container) return;
+        const hues = [210, 220, 240, 260, 280];
+        for (let i = 0; i < 22; i++) {
+          const p = document.createElement('div');
+          p.className = 'css-particle';
+          const size = 2 + Math.floor(Math.random() * 5);
+          const hue = hues[i % hues.length] + Math.floor(Math.random() * 20);
+          const col = `hsl(${hue},80%,65%)`;
+          p.style.cssText = `
+          width:${size}px;height:${size}px;
+          left:${5 + Math.random() * 90}%;
+          bottom:${Math.random() * 70}%;
+          background:${col};
+          box-shadow:0 0 ${size * 3}px ${col};
+          animation-duration:${3 + Math.random() * 4}s;
+          animation-delay:-${Math.random() * 4}s;
+        `;
+          container.appendChild(p);
+        }
+      })();
+    </script>
+  </body>
+</html>

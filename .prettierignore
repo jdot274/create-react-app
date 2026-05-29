@@ -7,3 +7,4 @@ packages/react-error-overlay/fixtures/inline*
 packages/react-error-overlay/fixtures/junk*
 packages/react-error-overlay/lib/
 packages/react-error-overlay/coverage/
+packages/react-error-overlay/flow/
