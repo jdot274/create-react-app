@@ -12,22 +12,22 @@ function useScrollSpy(sectionIds) {
     const observers = [];
     const visible = {};
 
-    sectionIds.forEach((id) => {
+    sectionIds.forEach(id => {
       const el = document.getElementById(id);
       if (!el) return;
       const obs = new IntersectionObserver(
         ([entry]) => {
           visible[id] = entry.isIntersecting;
-          const found = sectionIds.find((sid) => visible[sid]);
+          const found = sectionIds.find(sid => visible[sid]);
           if (found) setActiveId(found);
         },
-        { threshold: 0.25, rootMargin: '-20% 0px -60% 0px' }
+        { threshold: 0.25, rootMargin: '-20% 0px -60% 0px' },
       );
       obs.observe(el);
       observers.push(obs);
     });
 
-    return () => observers.forEach((o) => o.disconnect());
+    return () => observers.forEach(o => o.disconnect());
   }, []);
 
   return activeId;
@@ -46,7 +46,7 @@ function useInView(ref, threshold = 0.15) {
           obs.disconnect();
         }
       },
-      { threshold }
+      { threshold },
     );
     obs.observe(ref.current);
     return () => obs.disconnect();
@@ -68,7 +68,12 @@ function GlassCard({ children, className = '', onClick, glow = false }) {
 }
 
 /* ── FloatingButton ──────────────────────────────────────── */
-function FloatingButton({ children, variant = 'primary', onClick, size = 'md' }) {
+function FloatingButton({
+  children,
+  variant = 'primary',
+  onClick,
+  size = 'md',
+}) {
   const cls = [
     'floating-btn',
     `floating-btn-${variant}`,
@@ -91,7 +96,10 @@ function SectionHeader({ label, title, desc }) {
   const ref = useRef(null);
   const inView = useInView(ref);
   return (
-    <div className={`section-header fade-in-up${inView ? ' in-view' : ''}`} ref={ref}>
+    <div
+      className={`section-header fade-in-up${inView ? ' in-view' : ''}`}
+      ref={ref}
+    >
       <span className="section-label">{label}</span>
       <h2 className="section-title">{title}</h2>
       {desc && <p className="section-desc">{desc}</p>}
@@ -102,26 +110,34 @@ function SectionHeader({ label, title, desc }) {
 /* ── OrbScene ────────────────────────────────────────────── */
 function OrbScene({ hue1 = '220', hue2 = '250' }) {
   return (
-    <div style={{
-      width: '100%',
-      height: '100%',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      background: `radial-gradient(ellipse at 50% 60%, hsl(${hue1},60%,8%) 0%, transparent 80%)`,
-      overflow: 'hidden',
-    }}>
-      <div className="scene-orb" style={{
-        '--orb-hue1': hue1,
-        '--orb-hue2': hue2,
-      }}>
-        <div className="scene-orb-inner" style={{
-          background: `radial-gradient(circle at 35% 35%,
+    <div
+      style={{
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: `radial-gradient(ellipse at 50% 60%, hsl(${hue1},60%,8%) 0%, transparent 80%)`,
+        overflow: 'hidden',
+      }}
+    >
+      <div
+        className="scene-orb"
+        style={{
+          '--orb-hue1': hue1,
+          '--orb-hue2': hue2,
+        }}
+      >
+        <div
+          className="scene-orb-inner"
+          style={{
+            background: `radial-gradient(circle at 35% 35%,
             hsl(${hue1},100%,75%) 0%,
             hsl(${hue2},80%,45%) 50%,
-            hsl(${Number(hue1)+20},70%,25%) 100%)`,
-          boxShadow: `0 0 40px hsl(${hue1},80%,50%,0.5)`,
-        }} />
+            hsl(${Number(hue1) + 20},70%,25%) 100%)`,
+            boxShadow: `0 0 40px hsl(${hue1},80%,50%,0.5)`,
+          }}
+        />
       </div>
     </div>
   );
@@ -140,12 +156,27 @@ function NeuralScene() {
     { x: 90, y: 25 },
   ];
   const edges = [
-    [0,1],[0,2],[1,3],[2,4],[3,5],[4,5],[1,6],[2,7],[0,7],[3,4],[6,3],[7,4],
+    [0, 1],
+    [0, 2],
+    [1, 3],
+    [2, 4],
+    [3, 5],
+    [4, 5],
+    [1, 6],
+    [2, 7],
+    [0, 7],
+    [3, 4],
+    [6, 3],
+    [7, 4],
   ];
 
   return (
     <div className="scene-neural">
-      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style={{ overflow:'visible' }}>
+      <svg
+        viewBox="0 0 100 100"
+        xmlns="http://www.w3.org/2000/svg"
+        style={{ overflow: 'visible' }}
+      >
         <defs>
           <radialGradient id="nodeGrad" cx="30%" cy="30%">
             <stop offset="0%" stopColor="#93c5fd" />
@@ -162,8 +193,10 @@ function NeuralScene() {
         {edges.map(([a, b], i) => (
           <line
             key={i}
-            x1={nodes[a].x} y1={nodes[a].y}
-            x2={nodes[b].x} y2={nodes[b].y}
+            x1={nodes[a].x}
+            y1={nodes[a].y}
+            x2={nodes[b].x}
+            y2={nodes[b].y}
             stroke="rgba(59,130,246,0.35)"
             strokeWidth="0.5"
             style={{
@@ -175,7 +208,9 @@ function NeuralScene() {
         {nodes.map((n, i) => (
           <circle
             key={i}
-            cx={n.x} cy={n.y} r="3"
+            cx={n.x}
+            cy={n.y}
+            r="3"
             fill="url(#nodeGrad)"
             filter="url(#glow)"
             style={{
@@ -192,14 +227,17 @@ function NeuralScene() {
 /* ── LiquidScene ─────────────────────────────────────────── */
 function LiquidScene() {
   return (
-    <div style={{
-      width:'100%',
-      height:'100%',
-      display:'flex',
-      alignItems:'center',
-      justifyContent:'center',
-      background: 'radial-gradient(ellipse at 50% 60%, rgba(6,182,212,0.04) 0%, transparent 80%)',
-    }}>
+    <div
+      style={{
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background:
+          'radial-gradient(ellipse at 50% 60%, rgba(6,182,212,0.04) 0%, transparent 80%)',
+      }}
+    >
       <div className="scene-liquid">
         <div className="scene-liquid-blob" />
       </div>
@@ -229,13 +267,19 @@ function ParticleScene() {
     hue: [220, 240, 185, 280][i % 4],
     duration: 4 + Math.random() * 6,
     delay: Math.random() * 4,
-    px: (-40 + Math.random() * 80) + 'px',
-    py: (-60 - Math.random() * 40) + 'px',
+    px: -40 + Math.random() * 80 + 'px',
+    py: -60 - Math.random() * 40 + 'px',
   }));
 
   return (
-    <div className="scene-particle" style={{ background: 'radial-gradient(ellipse at 50% 80%, rgba(99,102,241,0.05) 0%, transparent 70%)' }}>
-      {particles.map((p) => (
+    <div
+      className="scene-particle"
+      style={{
+        background:
+          'radial-gradient(ellipse at 50% 80%, rgba(99,102,241,0.05) 0%, transparent 70%)',
+      }}
+    >
+      {particles.map(p => (
         <div
           key={p.id}
           className="particle"
@@ -262,7 +306,7 @@ function GeoScene() {
   return (
     <div className="scene-geo">
       <div className="scene-cube">
-        {['front','back','left','right','top','bottom'].map((f) => (
+        {['front', 'back', 'left', 'right', 'top', 'bottom'].map(f => (
           <div key={f} className={`scene-cube-face face-${f}`} />
         ))}
       </div>
@@ -273,16 +317,16 @@ function GeoScene() {
 /* ── DockNav ─────────────────────────────────────────────── */
 function DockNav({ activeId, onNavigate }) {
   const items = [
-    { id: 'hero',       label: 'Home',       icon: '⌂' },
-    { id: 'spline',     label: 'Spline',     icon: '◉' },
-    { id: 'codepen',    label: 'Code',       icon: '⌨' },
-    { id: 'penpot',     label: 'Design',     icon: '◈' },
+    { id: 'hero', label: 'Home', icon: '⌂' },
+    { id: 'spline', label: 'Spline', icon: '◉' },
+    { id: 'codepen', label: 'Code', icon: '⌨' },
+    { id: 'penpot', label: 'Design', icon: '◈' },
     { id: 'playground', label: 'Playground', icon: '◇' },
   ];
 
   return (
     <nav className="dock-nav">
-      {items.map((item) => (
+      {items.map(item => (
         <button
           key={item.id}
           className={`dock-nav-item${activeId === item.id ? ' active' : ''}`}
@@ -316,19 +360,30 @@ function HeroSection({ onNavigate }) {
         </div>
 
         <h1 className="hero-headline">
-          Spatial Code<br />Lab
+          Spatial Code
+          <br />
+          Lab
         </h1>
 
         <p className="hero-subtitle">
-          An immersive playground where 3D scenes, live code demos, design systems,
-          and interactive React components collide in one unified spatial canvas.
+          An immersive playground where 3D scenes, live code demos, design
+          systems, and interactive React components collide in one unified
+          spatial canvas.
         </p>
 
         <div className="hero-actions">
-          <FloatingButton variant="primary" onClick={() => onNavigate('spline')} size="lg">
+          <FloatingButton
+            variant="primary"
+            onClick={() => onNavigate('spline')}
+            size="lg"
+          >
             ◉ &nbsp;Explore Lab
           </FloatingButton>
-          <FloatingButton variant="secondary" onClick={() => onNavigate('playground')} size="lg">
+          <FloatingButton
+            variant="secondary"
+            onClick={() => onNavigate('playground')}
+            size="lg"
+          >
             ◇ &nbsp;View Playground
           </FloatingButton>
         </div>
@@ -410,9 +465,7 @@ function SplineGallery() {
               className="spline-card"
               style={{ transitionDelay: `${i * 60}ms` }}
             >
-              <div className="spline-scene-bg">
-                {card.scene()}
-              </div>
+              <div className="spline-scene-bg">{card.scene()}</div>
               <div className="spline-card-overlay">
                 <div className="spline-card-title">{card.title}</div>
                 <Chip label={card.desc} color={card.chip} />
@@ -474,7 +527,7 @@ function LoaderDemo() {
   return (
     <div className="css-loader-demo">
       <div className="loader-dots">
-        {[0,1,2,3].map((i) => (
+        {[0, 1, 2, 3].map(i => (
           <div key={i} className="loader-dot" />
         ))}
       </div>
@@ -508,7 +561,13 @@ function CodePenLab() {
   const inView = useInView(ref);
 
   return (
-    <div className="section" style={{ background: 'radial-gradient(ellipse 60% 50% at 50% 50%, rgba(59,130,246,0.04) 0%, transparent 70%)' }}>
+    <div
+      className="section"
+      style={{
+        background:
+          'radial-gradient(ellipse 60% 50% at 50% 50%, rgba(59,130,246,0.04) 0%, transparent 70%)',
+      }}
+    >
       <div className="section-inner">
         <SectionHeader
           label="⌨ CodePen Lab"
@@ -597,7 +656,11 @@ const ELEVATIONS = [
   { name: 'sm', shadow: '0 1px 3px rgba(0,0,0,0.4)', desc: 'Surface level' },
   { name: 'md', shadow: '0 4px 16px rgba(0,0,0,0.5)', desc: 'Cards, panels' },
   { name: 'lg', shadow: '0 8px 32px rgba(0,0,0,0.6)', desc: 'Dropdowns' },
-  { name: 'xl', shadow: '0 16px 64px rgba(0,0,0,0.7)', desc: 'Modals, overlays' },
+  {
+    name: 'xl',
+    shadow: '0 16px 64px rgba(0,0,0,0.7)',
+    desc: 'Modals, overlays',
+  },
 ];
 
 function PenpotDesign() {
@@ -622,14 +685,24 @@ function PenpotDesign() {
             <div className="penpot-card-title">Color Palette</div>
             <div className="color-swatches">
               <div className="color-row">
-                {BLUE_SHADES.map((c) => (
-                  <div key={c.name} className="color-swatch" style={{ background: c.hex }} title={c.name} />
+                {BLUE_SHADES.map(c => (
+                  <div
+                    key={c.name}
+                    className="color-swatch"
+                    style={{ background: c.hex }}
+                    title={c.name}
+                  />
                 ))}
               </div>
               <div className="color-swatch-label">Blue Scale</div>
               <div className="color-row">
-                {INDIGO_SHADES.map((c) => (
-                  <div key={c.name} className="color-swatch" style={{ background: c.hex }} title={c.name} />
+                {INDIGO_SHADES.map(c => (
+                  <div
+                    key={c.name}
+                    className="color-swatch"
+                    style={{ background: c.hex }}
+                    title={c.name}
+                  />
                 ))}
               </div>
               <div className="color-swatch-label">Indigo Scale</div>
@@ -640,7 +713,7 @@ function PenpotDesign() {
           <div className="penpot-card" style={{ transitionDelay: '60ms' }}>
             <div className="penpot-card-title">Type Scale</div>
             <div className="type-scale">
-              {TYPE_SCALE.map((t) => (
+              {TYPE_SCALE.map(t => (
                 <div key={t.size} className="type-row">
                   <span className="type-size">{t.size}</span>
                   <span
@@ -657,10 +730,15 @@ function PenpotDesign() {
           {/* Spacing */}
           <div className="penpot-card" style={{ transitionDelay: '120ms' }}>
             <div className="penpot-card-title">Spacing System</div>
-            {SPACING.map((s) => (
+            {SPACING.map(s => (
               <div key={s.name} className="spacing-row">
-                <div className="spacing-block" style={{ width: s.value * 1.5 }} />
-                <span className="spacing-label">{s.name} · {s.value}px</span>
+                <div
+                  className="spacing-block"
+                  style={{ width: s.value * 1.5 }}
+                />
+                <span className="spacing-label">
+                  {s.name} · {s.value}px
+                </span>
               </div>
             ))}
           </div>
@@ -669,15 +747,29 @@ function PenpotDesign() {
           <div className="penpot-card" style={{ transitionDelay: '180ms' }}>
             <div className="penpot-card-title">Border Radius</div>
             <div className="radius-samples">
-              {RADII.map((r) => (
+              {RADII.map(r => (
                 <div key={r.name} className="radius-sample">
                   <div
                     className="radius-box"
                     style={{ borderRadius: r.value }}
                   />
                   <div className="radius-name">
-                    <div style={{ color: 'var(--text-secondary)', fontSize: '11px' }}>--r-{r.name}</div>
-                    <div style={{ color: 'var(--text-tertiary)', fontSize: '10px' }}>{r.value}</div>
+                    <div
+                      style={{
+                        color: 'var(--text-secondary)',
+                        fontSize: '11px',
+                      }}
+                    >
+                      --r-{r.name}
+                    </div>
+                    <div
+                      style={{
+                        color: 'var(--text-tertiary)',
+                        fontSize: '10px',
+                      }}
+                    >
+                      {r.value}
+                    </div>
                   </div>
                 </div>
               ))}
@@ -688,12 +780,23 @@ function PenpotDesign() {
           <div className="penpot-card" style={{ transitionDelay: '240ms' }}>
             <div className="penpot-card-title">Elevation</div>
             <div className="elevation-samples">
-              {ELEVATIONS.map((e) => (
+              {ELEVATIONS.map(e => (
                 <div key={e.name} className="elevation-row">
-                  <div className="elevation-box" style={{ boxShadow: e.shadow }} />
+                  <div
+                    className="elevation-box"
+                    style={{ boxShadow: e.shadow }}
+                  />
                   <span className="elevation-name">
                     <span style={{ fontWeight: 600 }}>{e.name}</span>
-                    <span style={{ color: 'var(--text-tertiary)', marginLeft: 8, fontSize: '11px' }}>{e.desc}</span>
+                    <span
+                      style={{
+                        color: 'var(--text-tertiary)',
+                        marginLeft: 8,
+                        fontSize: '11px',
+                      }}
+                    >
+                      {e.desc}
+                    </span>
                   </span>
                 </div>
               ))}
@@ -708,7 +811,7 @@ function PenpotDesign() {
                 { label: 'ease-in', cls: 'ease-in' },
                 { label: 'ease-out', cls: 'ease-out' },
                 { label: 'spring', cls: 'spring' },
-              ].map((m) => (
+              ].map(m => (
                 <div key={m.label} className="motion-row">
                   <div className="motion-label">{m.label}</div>
                   <div className="motion-bar-track">
@@ -733,15 +836,15 @@ function ToggleSwitches() {
     livePreview: false,
   });
 
-  const toggle = (key) => {
-    setToggles((prev) => ({ ...prev, [key]: !prev[key] }));
+  const toggle = key => {
+    setToggles(prev => ({ ...prev, [key]: !prev[key] }));
   };
 
   const items = [
-    { key: 'darkMode',      label: 'Dark Mode' },
+    { key: 'darkMode', label: 'Dark Mode' },
     { key: 'notifications', label: 'Notifications' },
-    { key: 'autoSave',      label: 'Auto Save' },
-    { key: 'livePreview',   label: 'Live Preview' },
+    { key: 'autoSave', label: 'Auto Save' },
+    { key: 'livePreview', label: 'Live Preview' },
   ];
 
   return (
@@ -752,7 +855,7 @@ function ToggleSwitches() {
       </div>
       <div className="playground-card-body">
         <div className="toggle-list">
-          {items.map((item) => (
+          {items.map(item => (
             <div key={item.key} className="toggle-row">
               <span className="toggle-label">{item.label}</span>
               <label className="toggle-switch">
@@ -776,9 +879,9 @@ function TabNavDemo() {
   const [activeTab, setActiveTab] = useState('overview');
 
   const tabs = [
-    { id: 'overview',   label: 'Overview' },
-    { id: 'analytics',  label: 'Analytics' },
-    { id: 'settings',   label: 'Settings' },
+    { id: 'overview', label: 'Overview' },
+    { id: 'analytics', label: 'Analytics' },
+    { id: 'settings', label: 'Settings' },
   ];
 
   return (
@@ -789,7 +892,7 @@ function TabNavDemo() {
       </div>
       <div className="playground-card-body">
         <div className="tab-nav">
-          {tabs.map((t) => (
+          {tabs.map(t => (
             <button
               key={t.id}
               className={`tab-btn${activeTab === t.id ? ' active' : ''}`}
@@ -827,14 +930,36 @@ function TabNavDemo() {
               <div style={{ padding: '8px 0' }}>
                 {['Organic', 'Direct', 'Referral', 'Social'].map((src, i) => (
                   <div key={src} style={{ marginBottom: 12 }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                      <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{src}</span>
-                      <span style={{ fontSize: '12px', color: 'var(--accent-blue)', fontWeight: 600 }}>
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        marginBottom: 4,
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontSize: '12px',
+                          color: 'var(--text-secondary)',
+                        }}
+                      >
+                        {src}
+                      </span>
+                      <span
+                        style={{
+                          fontSize: '12px',
+                          color: 'var(--accent-blue)',
+                          fontWeight: 600,
+                        }}
+                      >
                         {[45, 28, 18, 9][i]}%
                       </span>
                     </div>
                     <div className="progress-bar">
-                      <div className="progress-fill" style={{ width: `${[45, 28, 18, 9][i]}%` }} />
+                      <div
+                        className="progress-fill"
+                        style={{ width: `${[45, 28, 18, 9][i]}%` }}
+                      />
                     </div>
                   </div>
                 ))}
@@ -843,11 +968,33 @@ function TabNavDemo() {
           )}
           {activeTab === 'settings' && (
             <div className="tab-panel active">
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <div
+                style={{ display: 'flex', flexDirection: 'column', gap: 10 }}
+              >
                 {['Compact View', 'Email Reports', 'API Access'].map((s, i) => (
-                  <div key={s} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 12px', background: 'rgba(0,0,0,0.2)', borderRadius: 8 }}>
-                    <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>{s}</span>
-                    <Chip label={i === 1 ? 'Off' : 'On'} color={i === 1 ? 'indigo' : 'cyan'} />
+                  <div
+                    key={s}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      padding: '8px 12px',
+                      background: 'rgba(0,0,0,0.2)',
+                      borderRadius: 8,
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontSize: '13px',
+                        color: 'var(--text-secondary)',
+                      }}
+                    >
+                      {s}
+                    </span>
+                    <Chip
+                      label={i === 1 ? 'Off' : 'On'}
+                      color={i === 1 ? 'indigo' : 'cyan'}
+                    />
                   </div>
                 ))}
               </div>
@@ -869,10 +1016,26 @@ function ModalDemo() {
         <div className="playground-card-title">Modal Dialog</div>
         <Chip label="useState" color="cyan" />
       </div>
-      <div className="playground-card-body" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16, paddingTop: 32, paddingBottom: 32 }}>
+      <div
+        className="playground-card-body"
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: 16,
+          paddingTop: 32,
+          paddingBottom: 32,
+        }}
+      >
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontSize: '2.5rem', marginBottom: 8 }}>◈</div>
-          <div style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: 20 }}>
+          <div
+            style={{
+              fontSize: '13px',
+              color: 'var(--text-secondary)',
+              marginBottom: 20,
+            }}
+          >
             Click to open a glass modal with backdrop blur
           </div>
         </div>
@@ -882,18 +1045,29 @@ function ModalDemo() {
 
         {open && (
           <div className="modal-backdrop" onClick={() => setOpen(false)}>
-            <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>
-              <button className="modal-close-x" onClick={() => setOpen(false)}>✕</button>
+            <div className="modal-dialog" onClick={e => e.stopPropagation()}>
+              <button className="modal-close-x" onClick={() => setOpen(false)}>
+                ✕
+              </button>
               <div className="modal-title">Spatial Modal</div>
               <div className="modal-body">
-                This glass modal features a backdrop blur overlay, spring animation entrance,
-                and click-outside-to-close behavior — all with pure React state.
+                This glass modal features a backdrop blur overlay, spring
+                animation entrance, and click-outside-to-close behavior — all
+                with pure React state.
               </div>
               <div className="modal-footer">
-                <FloatingButton variant="secondary" size="sm" onClick={() => setOpen(false)}>
+                <FloatingButton
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => setOpen(false)}
+                >
                   Cancel
                 </FloatingButton>
-                <FloatingButton variant="primary" size="sm" onClick={() => setOpen(false)}>
+                <FloatingButton
+                  variant="primary"
+                  size="sm"
+                  onClick={() => setOpen(false)}
+                >
                   Confirm
                 </FloatingButton>
               </div>
@@ -910,10 +1084,10 @@ function DashboardWidget() {
   const [highlighted, setHighlighted] = useState(null);
 
   const metrics = [
-    { label: 'Revenue',  value: '$48.2k', delta: '+12.4%', dir: 'up' },
-    { label: 'Users',    value: '12.4k',  delta: '+8.1%',  dir: 'up' },
-    { label: 'Orders',   value: '3.2k',   delta: '-2.3%',  dir: 'down' },
-    { label: 'Conv.',    value: '2.8%',   delta: '+0.4%',  dir: 'up' },
+    { label: 'Revenue', value: '$48.2k', delta: '+12.4%', dir: 'up' },
+    { label: 'Users', value: '12.4k', delta: '+8.1%', dir: 'up' },
+    { label: 'Orders', value: '3.2k', delta: '-2.3%', dir: 'down' },
+    { label: 'Conv.', value: '2.8%', delta: '+0.4%', dir: 'up' },
   ];
 
   const barHeights = [55, 72, 44, 88, 61, 78, 95];
@@ -926,7 +1100,7 @@ function DashboardWidget() {
       </div>
       <div className="playground-card-body">
         <div className="dashboard-metrics">
-          {metrics.map((m) => (
+          {metrics.map(m => (
             <div key={m.label} className="metric-card">
               <div className="metric-label">{m.label}</div>
               <div className="metric-value">
@@ -937,7 +1111,15 @@ function DashboardWidget() {
           ))}
         </div>
 
-        <div style={{ fontSize: '10px', color: 'var(--text-tertiary)', marginBottom: 8, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+        <div
+          style={{
+            fontSize: '10px',
+            color: 'var(--text-tertiary)',
+            marginBottom: 8,
+            letterSpacing: '0.06em',
+            textTransform: 'uppercase',
+          }}
+        >
           Weekly Trend
         </div>
         <div className="bar-chart">
@@ -947,9 +1129,10 @@ function DashboardWidget() {
               className="bar-chart-bar"
               style={{
                 height: `${h}%`,
-                background: highlighted === i
-                  ? 'linear-gradient(180deg, var(--accent-blue) 0%, rgba(59,130,246,0.6) 100%)'
-                  : undefined,
+                background:
+                  highlighted === i
+                    ? 'linear-gradient(180deg, var(--accent-blue) 0%, rgba(59,130,246,0.6) 100%)'
+                    : undefined,
               }}
               onMouseEnter={() => setHighlighted(i)}
               onMouseLeave={() => setHighlighted(null)}
@@ -967,7 +1150,13 @@ function ReactPlayground() {
   const inView = useInView(ref);
 
   return (
-    <div className="section" style={{ background: 'radial-gradient(ellipse 60% 50% at 50% 50%, rgba(99,102,241,0.04) 0%, transparent 70%)' }}>
+    <div
+      className="section"
+      style={{
+        background:
+          'radial-gradient(ellipse 60% 50% at 50% 50%, rgba(99,102,241,0.04) 0%, transparent 70%)',
+      }}
+    >
       <div className="section-inner">
         <SectionHeader
           label="◇ Playground"
@@ -992,11 +1181,11 @@ function ReactPlayground() {
 /* ── Footer ──────────────────────────────────────────────── */
 function Footer({ onNavigate }) {
   const navLinks = [
-    { label: 'Hero',        id: 'hero' },
-    { label: 'Spline',      id: 'spline' },
-    { label: 'CodePen',     id: 'codepen' },
-    { label: 'Design',      id: 'penpot' },
-    { label: 'Playground',  id: 'playground' },
+    { label: 'Hero', id: 'hero' },
+    { label: 'Spline', id: 'spline' },
+    { label: 'CodePen', id: 'codepen' },
+    { label: 'Design', id: 'penpot' },
+    { label: 'Playground', id: 'playground' },
   ];
 
   return (
@@ -1029,9 +1218,15 @@ function Footer({ onNavigate }) {
 
 /* ── App ─────────────────────────────────────────────────── */
 function App() {
-  const activeId = useScrollSpy(['hero', 'spline', 'codepen', 'penpot', 'playground']);
+  const activeId = useScrollSpy([
+    'hero',
+    'spline',
+    'codepen',
+    'penpot',
+    'playground',
+  ]);
 
-  const scrollTo = useCallback((id) => {
+  const scrollTo = useCallback(id => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   }, []);
 
