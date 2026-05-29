@@ -18,4 +18,6 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" vi
 </svg>`;
 
 fs.writeFileSync(path.join(__dirname, 'icon.svg'), svg);
-console.log('icon.svg written — convert to icon.png with: npx svgexport electron/icon.svg electron/icon.png 512:512');
+console.log(
+  'icon.svg written — convert to icon.png with: npx svgexport electron/icon.svg electron/icon.png 512:512'
+);

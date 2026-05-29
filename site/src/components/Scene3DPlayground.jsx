@@ -18,14 +18,20 @@ import * as THREE from 'three';
 
 function RotatingBox({ position, color, speed = 1 }) {
   const mesh = useRef();
-  useFrame((state) => {
+  useFrame(state => {
     mesh.current.rotation.x = state.clock.elapsedTime * speed * 0.6;
     mesh.current.rotation.y = state.clock.elapsedTime * speed * 0.4;
   });
   return (
     <Float speed={1.5} floatIntensity={0.5}>
       <Box ref={mesh} position={position} args={[1, 1, 1]}>
-        <MeshWobbleMaterial color={color} factor={0.3} speed={2} metalness={0.8} roughness={0.1} />
+        <MeshWobbleMaterial
+          color={color}
+          factor={0.3}
+          speed={2}
+          metalness={0.8}
+          roughness={0.1}
+        />
       </Box>
     </Float>
   );
@@ -51,7 +57,7 @@ function RotatingSphere({ position, color, distort = 0.4 }) {
 
 function SpinningTorus({ position, color }) {
   const mesh = useRef();
-  useFrame((state) => {
+  useFrame(state => {
     mesh.current.rotation.x = state.clock.elapsedTime * 0.8;
     mesh.current.rotation.z = state.clock.elapsedTime * 0.5;
   });
@@ -66,14 +72,19 @@ function SpinningTorus({ position, color }) {
 
 function FloatingOctahedron({ position, color }) {
   const mesh = useRef();
-  useFrame((state) => {
+  useFrame(state => {
     mesh.current.rotation.y = state.clock.elapsedTime * 0.7;
     mesh.current.rotation.z = state.clock.elapsedTime * 0.4;
   });
   return (
     <Float speed={2.5} floatIntensity={1.2}>
       <Octahedron ref={mesh} position={position} args={[0.65]}>
-        <meshStandardMaterial color={color} wireframe emissive={color} emissiveIntensity={0.6} />
+        <meshStandardMaterial
+          color={color}
+          wireframe
+          emissive={color}
+          emissiveIntensity={0.6}
+        />
       </Octahedron>
     </Float>
   );
@@ -87,7 +98,12 @@ function GridFloor() {
   return (
     <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2.5, 0]}>
       <primitive object={grid} />
-      <meshStandardMaterial color="#1a1a2e" wireframe transparent opacity={0.4} />
+      <meshStandardMaterial
+        color="#1a1a2e"
+        wireframe
+        transparent
+        opacity={0.4}
+      />
     </mesh>
   );
 }
@@ -101,7 +117,14 @@ export default function Scene3DPlayground() {
       style={{ background: 'transparent' }}
     >
       <ambientLight intensity={0.4} />
-      <spotLight position={[10, 10, 10]} angle={0.3} penumbra={1} intensity={2} castShadow color="#7c3aed" />
+      <spotLight
+        position={[10, 10, 10]}
+        angle={0.3}
+        penumbra={1}
+        intensity={2}
+        castShadow
+        color="#7c3aed"
+      />
       <pointLight position={[-8, 5, -5]} intensity={1.5} color="#2563eb" />
       <pointLight position={[8, -2, 5]} intensity={1} color="#db2777" />
 
@@ -111,7 +134,13 @@ export default function Scene3DPlayground() {
       <FloatingOctahedron position={[3.5, 0.2, 0]} color="#db2777" />
 
       <GridFloor />
-      <ContactShadows position={[0, -2.4, 0]} opacity={0.4} scale={15} blur={2} far={4} />
+      <ContactShadows
+        position={[0, -2.4, 0]}
+        opacity={0.4}
+        scale={15}
+        blur={2}
+        far={4}
+      />
 
       <Environment preset="city" />
       <OrbitControls

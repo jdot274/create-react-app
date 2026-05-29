@@ -1,11 +1,23 @@
 import { useRef, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, MeshDistortMaterial, Float, Stars, Trail } from '@react-three/drei';
+import {
+  OrbitControls,
+  MeshDistortMaterial,
+  Float,
+  Stars,
+  Trail,
+} from '@react-three/drei';
 import * as THREE from 'three';
 
-function FloatingOrb({ position, color, speed = 1, distort = 0.4, radius = 1 }) {
+function FloatingOrb({
+  position,
+  color,
+  speed = 1,
+  distort = 0.4,
+  radius = 1,
+}) {
   const mesh = useRef();
-  useFrame((state) => {
+  useFrame(state => {
     mesh.current.rotation.x = state.clock.elapsedTime * 0.2 * speed;
     mesh.current.rotation.y = state.clock.elapsedTime * 0.3 * speed;
   });
@@ -30,7 +42,7 @@ function FloatingOrb({ position, color, speed = 1, distort = 0.4, radius = 1 }) 
 
 function WireframeTorus({ position, color }) {
   const mesh = useRef();
-  useFrame((state) => {
+  useFrame(state => {
     mesh.current.rotation.x = state.clock.elapsedTime * 0.4;
     mesh.current.rotation.z = state.clock.elapsedTime * 0.2;
   });
@@ -79,7 +91,7 @@ function ParticleField() {
   }, []);
 
   const points = useRef();
-  useFrame((state) => {
+  useFrame(state => {
     points.current.rotation.y = state.clock.elapsedTime * 0.03;
     points.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.02) * 0.1;
   });
@@ -87,24 +99,42 @@ function ParticleField() {
   return (
     <points ref={points}>
       <bufferGeometry>
-        <bufferAttribute attach="attributes-position" count={count} array={positions} itemSize={3} />
-        <bufferAttribute attach="attributes-color" count={count} array={colors} itemSize={3} />
+        <bufferAttribute
+          attach="attributes-position"
+          count={count}
+          array={positions}
+          itemSize={3}
+        />
+        <bufferAttribute
+          attach="attributes-color"
+          count={count}
+          array={colors}
+          itemSize={3}
+        />
       </bufferGeometry>
-      <pointsMaterial size={0.06} vertexColors transparent opacity={0.8} sizeAttenuation />
+      <pointsMaterial
+        size={0.06}
+        vertexColors
+        transparent
+        opacity={0.8}
+        sizeAttenuation
+      />
     </points>
   );
 }
 
 function OrbitalRing({ radius, speed, color, tilt }) {
   const group = useRef();
-  useFrame((state) => {
+  useFrame(state => {
     group.current.rotation.z = state.clock.elapsedTime * speed;
   });
   const points = useMemo(() => {
     const pts = [];
     for (let i = 0; i <= 128; i++) {
       const angle = (i / 128) * Math.PI * 2;
-      pts.push(new THREE.Vector3(Math.cos(angle) * radius, Math.sin(angle) * radius, 0));
+      pts.push(
+        new THREE.Vector3(Math.cos(angle) * radius, Math.sin(angle) * radius, 0)
+      );
     }
     return pts;
   }, [radius]);
@@ -116,7 +146,7 @@ function OrbitalRing({ radius, speed, color, tilt }) {
           <bufferAttribute
             attach="attributes-position"
             count={points.length}
-            array={new Float32Array(points.flatMap((p) => [p.x, p.y, p.z]))}
+            array={new Float32Array(points.flatMap(p => [p.x, p.y, p.z]))}
             itemSize={3}
           />
         </bufferGeometry>
@@ -128,7 +158,7 @@ function OrbitalRing({ radius, speed, color, tilt }) {
 
 function CentralCore() {
   const mesh = useRef();
-  useFrame((state) => {
+  useFrame(state => {
     mesh.current.rotation.y = state.clock.elapsedTime * 0.5;
     mesh.current.rotation.z = state.clock.elapsedTime * 0.2;
   });
@@ -164,13 +194,47 @@ export default function HeroScene() {
 
       <CentralCore />
       <OrbitalRing radius={2} speed={0.4} color="#7c3aed" tilt={Math.PI / 6} />
-      <OrbitalRing radius={2.8} speed={-0.3} color="#2563eb" tilt={-Math.PI / 4} />
-      <OrbitalRing radius={3.6} speed={0.2} color="#db2777" tilt={Math.PI / 3} />
+      <OrbitalRing
+        radius={2.8}
+        speed={-0.3}
+        color="#2563eb"
+        tilt={-Math.PI / 4}
+      />
+      <OrbitalRing
+        radius={3.6}
+        speed={0.2}
+        color="#db2777"
+        tilt={Math.PI / 3}
+      />
 
-      <FloatingOrb position={[-3.5, 1.5, -2]} color="#7c3aed" speed={0.8} radius={0.5} distort={0.5} />
-      <FloatingOrb position={[3.5, -1, -1]} color="#2563eb" speed={1.2} radius={0.6} distort={0.3} />
-      <FloatingOrb position={[2, 2.5, -3]} color="#db2777" speed={0.6} radius={0.4} distort={0.6} />
-      <FloatingOrb position={[-2.5, -2, -2]} color="#059669" speed={1} radius={0.35} distort={0.45} />
+      <FloatingOrb
+        position={[-3.5, 1.5, -2]}
+        color="#7c3aed"
+        speed={0.8}
+        radius={0.5}
+        distort={0.5}
+      />
+      <FloatingOrb
+        position={[3.5, -1, -1]}
+        color="#2563eb"
+        speed={1.2}
+        radius={0.6}
+        distort={0.3}
+      />
+      <FloatingOrb
+        position={[2, 2.5, -3]}
+        color="#db2777"
+        speed={0.6}
+        radius={0.4}
+        distort={0.6}
+      />
+      <FloatingOrb
+        position={[-2.5, -2, -2]}
+        color="#059669"
+        speed={1}
+        radius={0.35}
+        distort={0.45}
+      />
 
       <WireframeTorus position={[4, 0, -4]} color="#7c3aed" />
       <WireframeTorus position={[-4, 1, -3]} color="#06b6d4" />
