@@ -18,8 +18,8 @@ This is **Joey's AAA interactive experience lab** — a personal R&D repository 
 
 | Version | Branch | PR | What It Is | Stack | Status |
 |---------|--------|----|------------|-------|--------|
-| v1 | `claude/spatial-code-lab-2WtXw` | [PR #1](../../pull/1) | Spatial Code Lab — glassmorphism showcase with Spline 3D, CodePen lab, React Playground, Figma integration, dock nav | Vanilla HTML/CSS/JS + React + Framer Code Components (.tsx) + Spline | Shipped |
-| v2 | `claude/react-2d-3d-interactive-site-XcFbo` | [PR #2](../../pull/2) | React 2D+3D Interactive Site — full React app with Framer Motion, React Three Fiber, Electron desktop wrapper | React + Framer Motion + R3F + Three.js + Vite + Electron | Shipped |
+| v1 | `claude/spatial-code-lab-2WtXw` | [PR #1](https://github.com/jdot274/create-react-app/pull/1) | Spatial Code Lab — glassmorphism showcase with Spline 3D, CodePen lab, React Playground, Figma integration, dock nav | Vanilla HTML/CSS/JS + React + Framer Code Components (.tsx) + Spline | Shipped |
+| v2 | `claude/react-2d-3d-interactive-site-XcFbo` | [PR #2](https://github.com/jdot274/create-react-app/pull/2) | React 2D+3D Interactive Site — full React app with Framer Motion, React Three Fiber, Electron desktop wrapper | React + Framer Motion + R3F + Three.js + Vite + Electron | Shipped |
 | v3 | `claude/neural-wave-animation-2Mc4t` | (no PR yet) | Neural Wave Animation — Blender Python pipeline generating GLB/Alembic assets, HTML viewers, UE5 integration tools | Blender Python + GLB/GLTF + Alembic + MaterialX/OpenPBR + param_server.py | Shipped |
 
 For full details on each version, see [`wiki/Versions.md`](wiki/Versions.md).
@@ -77,7 +77,8 @@ create-react-app/
 │   ├── Stack-Map.md
 │   └── Session-Handoff.md
 ├── spatial-code-lab/                  ← v1 project folder
-├── <react-2d-3d-interactive-site>/    ← v2 project folder
+├── site/                              ← v2 project folder
+├── neural-wave/                       ← v3 project folder (future cleanup target)
 ├── <your-new-project>/                ← v4, v5, etc — each gets its own folder
 └── .github/
     ├── PULL_REQUEST_TEMPLATE.md
@@ -221,6 +222,17 @@ box-shadow: 0 0 20px rgba(0, 212, 255, 0.3), 0 0 60px rgba(0, 136, 255, 0.1);
 - 60fps minimum; optimize aggressively
 
 **Quality bar:** AAA. If it looks like a tutorial project, keep working.
+
+---
+
+## Agent Behavior Rules (from operating experience in this repo)
+
+- Be resourceful — exhaust every available tool before asking Joey to do something manually
+- Default to action, not instruction — never give Joey a list of commands if you can run them yourself
+- Own the full task end to end: code → build → push → PR
+- If blocked, state specifically what is missing, once — do not repeat it
+- When a tool isn't found on first search, try at least 4 different search strategies before concluding it's unavailable
+- Desktop Commander, when available, should be used aggressively for running commands on Joey's machine
 
 ---
 
