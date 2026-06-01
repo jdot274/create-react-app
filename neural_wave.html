@@ -1,191 +1,215 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Neural Wave Animation</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: #000; overflow: hidden; }
-    canvas { display: block; }
-    #info {
-      position: absolute;
-      top: 16px;
-      left: 50%;
-      transform: translateX(-50%);
-      color: #7df9ff;
-      font-family: 'Courier New', monospace;
-      font-size: 13px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      opacity: 0.7;
-      pointer-events: none;
-    }
-  </style>
-</head>
-<body>
-  <div id="info">Neural Wave Emitter &mdash; 80&times;80 mesh &bull; 60-frame loop</div>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-  <script>
-    // --- CONFIG (mirrors the Python script) ---
-    const NUM_PIXELS   = 80;
-    const TOTAL_FRAMES = 60;
-    const DECAY_FACTOR = 0.25;
-    const FPS          = 30;
-
-    // --- SCENE SETUP ---
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
-
-    const scene  = new THREE.Scene();
-    scene.background = new THREE.Color(0x000000);
-    scene.fog = new THREE.FogExp2(0x000000, 0.04);
-
-    const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 200);
-    camera.position.set(0, -12, 10);
-    camera.lookAt(0, 0, 0);
-
-    // --- BUILD GRID GEOMETRY (replicates the meshgrid + Delaunay approach) ---
-    const N = NUM_PIXELS;
-    const geometry = new THREE.BufferGeometry();
-
-    // Vertices: N×N points on [-5, 5] × [-5, 5]
-    const positions = new Float32Array(N * N * 3);
-    const normals   = new Float32Array(N * N * 3);
-    const colors    = new Float32Array(N * N * 3);
-
-    for (let j = 0; j < N; j++) {
-      for (let i = 0; i < N; i++) {
-        const idx = (j * N + i) * 3;
-        positions[idx]     = -5 + (i / (N - 1)) * 10;   // X
-        positions[idx + 1] = -5 + (j / (N - 1)) * 10;   // Y
-        positions[idx + 2] = 0;                           // Z (updated per frame)
+  <head>
+    <meta charset="UTF-8" />
+    <title>Neural Wave Animation</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
       }
-    }
-
-    // Triangulate grid — two triangles per quad, same connectivity as Delaunay on a grid
-    const indexCount = (N - 1) * (N - 1) * 6;
-    const indices = new Uint32Array(indexCount);
-    let k = 0;
-    for (let j = 0; j < N - 1; j++) {
-      for (let i = 0; i < N - 1; i++) {
-        const a = j * N + i;
-        const b = j * N + i + 1;
-        const c = (j + 1) * N + i;
-        const d = (j + 1) * N + i + 1;
-        indices[k++] = a; indices[k++] = b; indices[k++] = c;
-        indices[k++] = b; indices[k++] = d; indices[k++] = c;
+      body {
+        background: #000;
+        overflow: hidden;
       }
-    }
+      canvas {
+        display: block;
+      }
+      #info {
+        position: absolute;
+        top: 16px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: #7df9ff;
+        font-family: 'Courier New', monospace;
+        font-size: 13px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        opacity: 0.7;
+        pointer-events: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="info">
+      Neural Wave Emitter &mdash; 80&times;80 mesh &bull; 60-frame loop
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+    <script>
+      // --- CONFIG (mirrors the Python script) ---
+      const NUM_PIXELS = 80;
+      const TOTAL_FRAMES = 60;
+      const DECAY_FACTOR = 0.25;
+      const FPS = 30;
 
-    geometry.setIndex(new THREE.BufferAttribute(indices, 1));
-    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    geometry.setAttribute('normal',   new THREE.BufferAttribute(normals, 3));
-    geometry.setAttribute('color',    new THREE.BufferAttribute(colors, 3));
+      // --- SCENE SETUP ---
+      const renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setPixelRatio(window.devicePixelRatio);
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
 
-    // --- MATERIAL: glass-like wireframe overlay + solid mesh ---
-    const solidMat = new THREE.MeshPhongMaterial({
-      vertexColors: true,
-      side: THREE.DoubleSide,
-      shininess: 120,
-      specular: new THREE.Color(0x7df9ff),
-      transparent: true,
-      opacity: 0.82,
-    });
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x000000);
+      scene.fog = new THREE.FogExp2(0x000000, 0.04);
 
-    const wireMat = new THREE.MeshBasicMaterial({
-      color: 0x00ffff,
-      wireframe: true,
-      transparent: true,
-      opacity: 0.12,
-    });
+      const camera = new THREE.PerspectiveCamera(
+        55,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        200,
+      );
+      camera.position.set(0, -12, 10);
+      camera.lookAt(0, 0, 0);
 
-    const solidMesh = new THREE.Mesh(geometry, solidMat);
-    const wireMesh  = new THREE.Mesh(geometry, wireMat);
-    scene.add(solidMesh);
-    scene.add(wireMesh);
+      // --- BUILD GRID GEOMETRY (replicates the meshgrid + Delaunay approach) ---
+      const N = NUM_PIXELS;
+      const geometry = new THREE.BufferGeometry();
 
-    // --- LIGHTING ---
-    scene.add(new THREE.AmbientLight(0x111133, 1.5));
-
-    const pointA = new THREE.PointLight(0x00ffff, 3, 30);
-    pointA.position.set(0, 0, 8);
-    scene.add(pointA);
-
-    const pointB = new THREE.PointLight(0x8833ff, 2, 20);
-    pointB.position.set(6, -6, 4);
-    scene.add(pointB);
-
-    const pointC = new THREE.PointLight(0xff33aa, 1.5, 20);
-    pointC.position.set(-6, 6, 4);
-    scene.add(pointC);
-
-    // --- WAVE UPDATE FUNCTION ---
-    function updateWave(phase) {
-      const pos = geometry.attributes.position;
-      const col = geometry.attributes.color;
+      // Vertices: N×N points on [-5, 5] × [-5, 5]
+      const positions = new Float32Array(N * N * 3);
+      const normals = new Float32Array(N * N * 3);
+      const colors = new Float32Array(N * N * 3);
 
       for (let j = 0; j < N; j++) {
         for (let i = 0; i < N; i++) {
-          const idx = j * N + i;
-          const x = pos.getX(idx);
-          const y = pos.getY(idx);
-          const R = Math.sqrt(x * x + y * y);
-
-          // Z = sin(2π*R - phase) * exp(-decay * R)
-          const z = Math.sin(2 * Math.PI * R - phase) * Math.exp(-DECAY_FACTOR * R);
-          pos.setZ(idx, z);
-
-          // Color: map z to cyan→purple gradient
-          const t = (z + 1) * 0.5;                      // normalize ~[-1,1] → [0,1]
-          const r = t * 0.4 + (1 - t) * 0.5;
-          const g = t * 0.95 + (1 - t) * 0.1;
-          const b = 1.0;
-          col.setXYZ(idx, r, g, b);
+          const idx = (j * N + i) * 3;
+          positions[idx] = -5 + (i / (N - 1)) * 10; // X
+          positions[idx + 1] = -5 + (j / (N - 1)) * 10; // Y
+          positions[idx + 2] = 0; // Z (updated per frame)
         }
       }
 
-      pos.needsUpdate = true;
-      col.needsUpdate = true;
-      geometry.computeVertexNormals();
-    }
-
-    // --- ANIMATION LOOP ---
-    let frame = 0;
-    const frameDuration = 1000 / FPS;
-    let lastTime = 0;
-
-    function animate(time) {
-      requestAnimationFrame(animate);
-
-      if (time - lastTime >= frameDuration) {
-        const phase = (frame / TOTAL_FRAMES) * 2 * Math.PI;
-        updateWave(phase);
-        frame = (frame + 1) % TOTAL_FRAMES;
-        lastTime = time;
-
-        // Slowly rotate the camera around the scene
-        const camAngle = time * 0.0002;
-        camera.position.x = Math.sin(camAngle) * 14;
-        camera.position.y = Math.cos(camAngle) * -14;
-        camera.position.z = 9 + Math.sin(time * 0.0003) * 2;
-        camera.lookAt(0, 0, 0);
+      // Triangulate grid — two triangles per quad, same connectivity as Delaunay on a grid
+      const indexCount = (N - 1) * (N - 1) * 6;
+      const indices = new Uint32Array(indexCount);
+      let k = 0;
+      for (let j = 0; j < N - 1; j++) {
+        for (let i = 0; i < N - 1; i++) {
+          const a = j * N + i;
+          const b = j * N + i + 1;
+          const c = (j + 1) * N + i;
+          const d = (j + 1) * N + i + 1;
+          indices[k++] = a;
+          indices[k++] = b;
+          indices[k++] = c;
+          indices[k++] = b;
+          indices[k++] = d;
+          indices[k++] = c;
+        }
       }
 
-      renderer.render(scene, camera);
-    }
+      geometry.setIndex(new THREE.BufferAttribute(indices, 1));
+      geometry.setAttribute(
+        'position',
+        new THREE.BufferAttribute(positions, 3),
+      );
+      geometry.setAttribute('normal', new THREE.BufferAttribute(normals, 3));
+      geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
-    // --- RESIZE HANDLER ---
-    window.addEventListener('resize', () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    });
+      // --- MATERIAL: glass-like wireframe overlay + solid mesh ---
+      const solidMat = new THREE.MeshPhongMaterial({
+        vertexColors: true,
+        side: THREE.DoubleSide,
+        shininess: 120,
+        specular: new THREE.Color(0x7df9ff),
+        transparent: true,
+        opacity: 0.82,
+      });
 
-    // Kick off
-    updateWave(0);
-    requestAnimationFrame(animate);
-  </script>
-</body>
+      const wireMat = new THREE.MeshBasicMaterial({
+        color: 0x00ffff,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.12,
+      });
+
+      const solidMesh = new THREE.Mesh(geometry, solidMat);
+      const wireMesh = new THREE.Mesh(geometry, wireMat);
+      scene.add(solidMesh);
+      scene.add(wireMesh);
+
+      // --- LIGHTING ---
+      scene.add(new THREE.AmbientLight(0x111133, 1.5));
+
+      const pointA = new THREE.PointLight(0x00ffff, 3, 30);
+      pointA.position.set(0, 0, 8);
+      scene.add(pointA);
+
+      const pointB = new THREE.PointLight(0x8833ff, 2, 20);
+      pointB.position.set(6, -6, 4);
+      scene.add(pointB);
+
+      const pointC = new THREE.PointLight(0xff33aa, 1.5, 20);
+      pointC.position.set(-6, 6, 4);
+      scene.add(pointC);
+
+      // --- WAVE UPDATE FUNCTION ---
+      function updateWave(phase) {
+        const pos = geometry.attributes.position;
+        const col = geometry.attributes.color;
+
+        for (let j = 0; j < N; j++) {
+          for (let i = 0; i < N; i++) {
+            const idx = j * N + i;
+            const x = pos.getX(idx);
+            const y = pos.getY(idx);
+            const R = Math.sqrt(x * x + y * y);
+
+            // Z = sin(2π*R - phase) * exp(-decay * R)
+            const z =
+              Math.sin(2 * Math.PI * R - phase) * Math.exp(-DECAY_FACTOR * R);
+            pos.setZ(idx, z);
+
+            // Color: map z to cyan→purple gradient
+            const t = (z + 1) * 0.5; // normalize ~[-1,1] → [0,1]
+            const r = t * 0.4 + (1 - t) * 0.5;
+            const g = t * 0.95 + (1 - t) * 0.1;
+            const b = 1.0;
+            col.setXYZ(idx, r, g, b);
+          }
+        }
+
+        pos.needsUpdate = true;
+        col.needsUpdate = true;
+        geometry.computeVertexNormals();
+      }
+
+      // --- ANIMATION LOOP ---
+      let frame = 0;
+      const frameDuration = 1000 / FPS;
+      let lastTime = 0;
+
+      function animate(time) {
+        requestAnimationFrame(animate);
+
+        if (time - lastTime >= frameDuration) {
+          const phase = (frame / TOTAL_FRAMES) * 2 * Math.PI;
+          updateWave(phase);
+          frame = (frame + 1) % TOTAL_FRAMES;
+          lastTime = time;
+
+          // Slowly rotate the camera around the scene
+          const camAngle = time * 0.0002;
+          camera.position.x = Math.sin(camAngle) * 14;
+          camera.position.y = Math.cos(camAngle) * -14;
+          camera.position.z = 9 + Math.sin(time * 0.0003) * 2;
+          camera.lookAt(0, 0, 0);
+        }
+
+        renderer.render(scene, camera);
+      }
+
+      // --- RESIZE HANDLER ---
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+
+      // Kick off
+      updateWave(0);
+      requestAnimationFrame(animate);
+    </script>
+  </body>
 </html>
