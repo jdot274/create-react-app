@@ -5,6 +5,5 @@ CODE_OF_CONDUCT.md
 
 # Project knowledge docs — not subject to OSS content linting
 CLAUDE.md
-wiki/
-.github/PULL_REQUEST_TEMPLATE.md
+wiki/**
 .github/ISSUE_TEMPLATE/session-brief.md
