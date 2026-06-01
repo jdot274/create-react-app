@@ -16,3 +16,6 @@ yarn-error.log*
 # Python
 __pycache__/
 *.pyc
+
+# Build artifacts
+neural_wave_bundle.zip
