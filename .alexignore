@@ -2,3 +2,7 @@ build
 
 CHANGELOG*
 CODE_OF_CONDUCT.md
+
+# Project knowledge docs — not subject to OSS content linting
+CLAUDE.md
+wiki/
