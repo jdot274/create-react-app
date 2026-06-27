@@ -48,7 +48,7 @@
   <body>
     <canvas id="c" width="390" height="390"></canvas>
     <div class="btns">
-      <button id="webm">Save .webm</button>
+      <button id="mp4">Save .mp4</button>
       <button id="gif">Save .gif</button>
     </div>
     <p>open in browser · save · drop into chat</p>
@@ -299,7 +299,7 @@
       requestAnimationFrame(loop);
 
       // ── record ────────────────────────────────────────────────────────────────────
-      document.getElementById('webm').onclick = function () {
+      document.getElementById('mp4').onclick = function () {
         const btn = this;
         btn.disabled = true;
         btn.textContent = 'Recording…';
@@ -308,15 +308,18 @@
         lastT = 0;
         const stream = cv.captureStream(60),
           chunks = [];
+        const mime = MediaRecorder.isTypeSupported('video/mp4;codecs=avc1')
+          ? 'video/mp4;codecs=avc1'
+          : 'video/webm;codecs=vp9';
         const mr = new MediaRecorder(stream, {
-          mimeType: 'video/webm;codecs=vp9',
+          mimeType: mime,
           videoBitsPerSecond: 3000000,
         });
         mr.ondataavailable = e => chunks.push(e.data);
         mr.onstop = () => {
-          dl(new Blob(chunks, { type: 'video/webm' }), 'loading.webm');
+          dl(new Blob(chunks, { type: mime }), 'loading.mp4');
           btn.disabled = false;
-          btn.textContent = 'Save .webm';
+          btn.textContent = 'Save .mp4';
         };
         mr.start();
         setTimeout(() => mr.stop(), 4000);
