@@ -87,7 +87,7 @@ function drawFrame(ctx, t) {
   // Progress bar fill
   if (prog > 0) {
     ctx.fillStyle = BLUE;
-    roundRect(ctx, 80, 295, Math.max(8, 320 * prog / 100), 8, 4);
+    roundRect(ctx, 80, 295, Math.max(8, (320 * prog) / 100), 8, 4);
     ctx.fill();
   }
 
@@ -158,7 +158,9 @@ export default function App() {
       <button onClick={handleRecord} disabled={recording} style={styles.button}>
         {recording ? 'Recording…' : 'Record 3s → download'}
       </button>
-      <p style={styles.hint}>Plays on loop · click record to save a .webm for IG</p>
+      <p style={styles.hint}>
+        Plays on loop · click record to save a .webm for IG
+      </p>
     </div>
   );
 }
