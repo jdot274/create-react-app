@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Message History Animation</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: #111;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        gap: 20px;
+        font-family: system-ui;
+      }
+      canvas {
+        border-radius: 16px;
+        display: block;
+      }
+      .btns {
+        display: flex;
+        gap: 12px;
+      }
+      button {
+        background: #1877f2;
+        color: #fff;
+        border: 0;
+        padding: 11px 22px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: opacity 0.15s;
+      }
+      button:disabled {
+        opacity: 0.45;
+        cursor: default;
+      }
+      button.secondary {
+        background: #333;
+      }
+      p {
+        color: #666;
+        font-size: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="c" width="480" height="480"></canvas>
+    <div class="btns">
+      <button id="webm">⬇ Save .webm (3s)</button>
+      <button id="gif" class="secondary">⬇ Save .gif (3s)</button>
+    </div>
+    <p>Open in browser · hit save · drop straight into chat</p>
+
+    <script>
+      // ── GIF encoder (LZW, pure JS, no dependencies) ──────────────────────────────
+      // Adapted from jnordberg/gif.js encoder core, MIT license
+      (function (g) {
+        const GIFEncoder = function (w, h) {
+          this.w = w;
+          this.h = h;
+          this.frames = [];
+        };
+        GIFEncoder.prototype.addFrame = function (imgData, delay) {
+          this.frames.push({ d: imgData, t: delay });
+        };
+        GIFEncoder.prototype.encode = function () {
+          const o = [];
+          // header
+          o.push(71, 73, 70, 56, 57, 97); // GIF89a
+          put16(o, this.w);
+          put16(o, this.h);
+          o.push(0, 0, 0); // no GCT, bg=0, aspect=0
+          // netscape loop extension
+          o.push(0x21, 0xff, 0x0b);
+          for (const c of [78, 69, 84, 83, 67, 65, 80, 69, 50, 46, 48])
+            o.push(c);
+          o.push(3, 1, 0, 0, 0);
+          for (const f of this.frames) {
+            const { pixels, palette } = quantize(f.d, this.w, this.h);
+            const colorBits = palBits(palette.length);
+            // GCE
+            o.push(0x21, 0xf9, 4, 0);
+            put16(o, Math.round(f.t / 10)); // delay in centiseconds
+            o.push(0, 0);
+            // image descriptor
+            o.push(0x2c);
+            put16(o, 0);
+            put16(o, 0);
+            put16(o, this.w);
+            put16(o, this.h);
+            o.push(0x80 | (colorBits - 1)); // local color table, size
+            // local color table
+            for (const [r, g, b] of palette) o.push(r, g, b);
+            // pad to 2^colorBits
+            for (let i = palette.length; i < 1 << colorBits; i++)
+              o.push(0, 0, 0);
+            // LZW
+            const lzw = lzwEncode(pixels, colorBits);
+            o.push(colorBits);
+            for (let i = 0; i < lzw.length; ) {
+              const len = Math.min(255, lzw.length - i);
+              o.push(len);
+              for (let j = 0; j < len; j++) o.push(lzw[i++]);
+            }
+            o.push(0);
+          }
+          o.push(0x3b);
+          return new Uint8Array(o);
+        };
+        function put16(a, v) {
+          a.push(v & 0xff, (v >> 8) & 0xff);
+        }
+        function palBits(n) {
+          let b = 2;
+          while (1 << b < n) b++;
+          return b;
+        }
+
+        function quantize(imgData, w, h) {
+          const data = imgData.data;
+          const map = new Map();
+          const pal = [];
+          const idx = new Uint8Array(w * h);
+          for (let i = 0; i < w * h; i++) {
+            const r = data[i * 4],
+              gv = data[i * 4 + 1],
+              b = data[i * 4 + 2];
+            // simple 5-bit quantize for smaller palette
+            const qr = (r >> 3) << 3,
+              qg = (gv >> 3) << 3,
+              qb = (b >> 3) << 3;
+            const key = (qr << 16) | (qg << 8) | qb;
+            if (!map.has(key)) {
+              if (pal.length >= 255) {
+                // find nearest
+                let best = 0,
+                  bd = 1e9;
+                for (let p = 0; p < pal.length; p++) {
+                  const dr = pal[p][0] - r,
+                    dg = pal[p][1] - gv,
+                    db = pal[p][2] - b;
+                  const d = dr * dr + dg * dg + db * db;
+                  if (d < bd) {
+                    bd = d;
+                    best = p;
+                  }
+                }
+                idx[i] = best;
+                continue;
+              }
+              map.set(key, pal.length);
+              pal.push([qr, qg, qb]);
+            }
+            idx[i] = map.get(key);
+          }
+          return { pixels: idx, palette: pal };
+        }
+
+        function lzwEncode(pixels, minBits) {
+          const clear = 1 << minBits,
+            eoi = clear + 1;
+          let codeSize = minBits + 1,
+            codeMask = (1 << codeSize) - 1;
+          const table = new Map();
+          const initTable = () => {
+            table.clear();
+            for (let i = 0; i < clear; i++)
+              table.set(String.fromCharCode(i), i);
+            table.set('C', clear);
+            table.set('E', eoi);
+          };
+          initTable();
+          let nextCode = eoi + 1;
+          const out = [];
+          let buf = 0,
+            bits = 0;
+          const emit = v => {
+            buf |= v << bits;
+            bits += codeSize;
+            while (bits >= 8) {
+              out.push(buf & 0xff);
+              buf >>= 8;
+              bits -= 8;
+            }
+          };
+          emit(clear);
+          let str = String.fromCharCode(pixels[0]);
+          for (let i = 1; i < pixels.length; i++) {
+            const ch = String.fromCharCode(pixels[i]);
+            const sc = str + ch;
+            if (table.has(sc)) {
+              str = sc;
+            } else {
+              emit(table.get(str));
+              if (nextCode <= 4095) {
+                table.set(sc, nextCode++);
+                if (nextCode > 1 << codeSize && codeSize < 12)
+                  codeSize++, (codeMask = (1 << codeSize) - 1);
+              } else {
+                emit(clear);
+                initTable();
+                nextCode = eoi + 1;
+                codeSize = minBits + 1;
+              }
+              str = ch;
+            }
+          }
+          emit(table.get(str));
+          emit(eoi);
+          if (bits > 0) out.push(buf & 0xff);
+          return out;
+        }
+        g.GIFEncoder = GIFEncoder;
+      })(window);
+
+      // ── Drawing ──────────────────────────────────────────────────────────────────
+      const cv = document.getElementById('c');
+      const ctx = cv.getContext('2d');
+      const W = 480,
+        H = 480,
+        CX = 240;
+      const BLUE = '#1877F2',
+        BG = '#F0F2F5',
+        CARD = '#ffffff',
+        DARK = '#1d2129',
+        GRAY = '#65676B',
+        TRACK = '#E4E6EB';
+
+      function rr(x, y, w, h, r) {
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.arcTo(x + w, y, x + w, y + h, r);
+        ctx.arcTo(x + w, y + h, x, y + h, r);
+        ctx.arcTo(x, y + h, x, y, r);
+        ctx.arcTo(x, y, x + w, y, r);
+        ctx.closePath();
+      }
+
+      function easeInOut(t) {
+        return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+      }
+
+      function draw(t) {
+        // progress cycles 0→1 every 2.4s, then holds briefly
+        const cycle = 2.8;
+        const raw = (t % cycle) / cycle;
+        const prog = raw < 0.85 ? easeInOut(raw / 0.85) : 1;
+        const fade = raw > 0.85 ? 1 - (raw - 0.85) / 0.15 : 1; // card fades out at end of cycle
+
+        // bg
+        ctx.fillStyle = BG;
+        ctx.fillRect(0, 0, W, H);
+
+        // card
+        ctx.save();
+        ctx.globalAlpha = fade;
+        ctx.shadowColor = 'rgba(0,0,0,0.12)';
+        ctx.shadowBlur = 24;
+        ctx.shadowOffsetY = 6;
+        ctx.fillStyle = CARD;
+        rr(40, 140, 400, 200, 16);
+        ctx.fill();
+        ctx.restore();
+
+        ctx.save();
+        ctx.globalAlpha = fade;
+
+        // icon circle
+        ctx.fillStyle = TRACK;
+        ctx.beginPath();
+        ctx.arc(CX, 194, 36, 0, Math.PI * 2);
+        ctx.fill();
+
+        // file icon body
+        ctx.fillStyle = '#fff';
+        roundedCornerFile(CX - 13, 174, 26, 32, 4);
+        ctx.fill();
+        ctx.strokeStyle = '#C4C6CA';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        // file corner fold
+        ctx.fillStyle = TRACK;
+        ctx.beginPath();
+        ctx.moveTo(CX + 4, 174);
+        ctx.lineTo(CX + 13, 183);
+        ctx.lineTo(CX + 4, 183);
+        ctx.closePath();
+        ctx.fill();
+
+        // file lines
+        ctx.strokeStyle = '#BEC0C4';
+        ctx.lineWidth = 1.5;
+        for (let i = 0; i < 3; i++) {
+          ctx.beginPath();
+          ctx.moveTo(CX - 7, 185 + i * 6);
+          ctx.lineTo(CX + 6, 185 + i * 6);
+          ctx.stroke();
+        }
+
+        // title
+        ctx.textAlign = 'center';
+        ctx.fillStyle = DARK;
+        ctx.font = '600 17px -apple-system,BlinkMacSystemFont,system-ui';
+        ctx.fillText('Message History', CX, 248);
+
+        // filename
+        ctx.fillStyle = GRAY;
+        ctx.font = '13px -apple-system,BlinkMacSystemFont,system-ui';
+        ctx.fillText('conversation_export_03032024.zip', CX, 267);
+
+        // progress track
+        ctx.fillStyle = TRACK;
+        rr(72, 288, 336, 8, 4);
+        ctx.fill();
+
+        // progress fill
+        ctx.fillStyle = BLUE;
+        rr(72, 288, Math.max(8, 336 * prog), 8, 4);
+        ctx.fill();
+
+        // spinner track
+        const sx = CX - 102,
+          sy = 324,
+          sr = 9;
+        ctx.strokeStyle = TRACK;
+        ctx.lineWidth = 2.5;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.arc(sx, sy, sr, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // spinner arc
+        const sa = t * 6;
+        ctx.strokeStyle = BLUE;
+        ctx.lineWidth = 2.5;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.arc(sx, sy, sr, sa, sa + 4.4);
+        ctx.stroke();
+
+        // status text
+        const pct = Math.min(100, Math.round(prog * 100));
+        ctx.fillStyle = GRAY;
+        ctx.font = '13px -apple-system,BlinkMacSystemFont,system-ui';
+        ctx.textAlign = 'left';
+        ctx.fillText(`Loading file… ${pct}%`, CX - 88, 328);
+
+        ctx.restore();
+      }
+
+      function roundedCornerFile(x, y, w, h, r) {
+        const fold = 9;
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.lineTo(x + w - fold, y);
+        ctx.lineTo(x + w, y + fold);
+        ctx.lineTo(x + w, y + h - r);
+        ctx.arcTo(x + w, y + h, x, y + h, r);
+        ctx.arcTo(x, y + h, x, y, r);
+        ctx.lineTo(x, y + r);
+        ctx.arcTo(x, y, x + w, y, r);
+        ctx.closePath();
+      }
+
+      // ── Animation loop ───────────────────────────────────────────────────────────
+      let t0 = performance.now();
+      (function loop(now) {
+        draw((now - t0) / 1000);
+        requestAnimationFrame(loop);
+      })(t0);
+
+      // ── WebM recording ───────────────────────────────────────────────────────────
+      document.getElementById('webm').onclick = function () {
+        const btn = this;
+        btn.disabled = true;
+        btn.textContent = 'Recording…';
+        const stream = cv.captureStream(60);
+        const chunks = [];
+        const mr = new MediaRecorder(stream, {
+          mimeType: 'video/webm;codecs=vp9',
+          videoBitsPerSecond: 4_000_000,
+        });
+        mr.ondataavailable = e => chunks.push(e.data);
+        mr.onstop = () => {
+          dl(new Blob(chunks, { type: 'video/webm' }), 'message-history.webm');
+          btn.disabled = false;
+          btn.textContent = '⬇ Save .webm (3s)';
+        };
+        t0 = performance.now(); // restart anim so recording starts clean
+        mr.start();
+        setTimeout(() => mr.stop(), 3000);
+      };
+
+      // ── GIF recording ────────────────────────────────────────────────────────────
+      document.getElementById('gif').onclick = async function () {
+        const btn = this;
+        btn.disabled = true;
+        const FPS = 20,
+          DUR = 3000,
+          TOTAL = Math.round((FPS * DUR) / 1000);
+        const delay = Math.round(1000 / FPS);
+        const enc = new GIFEncoder(W, H);
+        t0 = performance.now();
+        for (let i = 0; i < TOTAL; i++) {
+          btn.textContent = `Encoding… ${Math.round((i / TOTAL) * 100)}%`;
+          const ft = i / FPS;
+          draw(ft);
+          enc.addFrame(ctx.getImageData(0, 0, W, H), delay);
+          await new Promise(r => setTimeout(r, 0)); // yield to keep UI alive
+        }
+        btn.textContent = 'Building GIF…';
+        await new Promise(r => setTimeout(r, 0));
+        const bytes = enc.encode();
+        dl(new Blob([bytes], { type: 'image/gif' }), 'message-history.gif');
+        btn.disabled = false;
+        btn.textContent = '⬇ Save .gif (3s)';
+        t0 = performance.now(); // resume live animation
+      };
+
+      function dl(blob, name) {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = name;
+        a.click();
+      }
+    </script>
+  </body>
+</html>

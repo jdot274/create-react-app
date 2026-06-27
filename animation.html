@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Loading</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: #000;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        gap: 16px;
+        font-family: system-ui;
+      }
+      canvas {
+        display: block;
+      }
+      .btns {
+        display: flex;
+        gap: 10px;
+      }
+      button {
+        background: #222;
+        color: #fff;
+        border: 1px solid #333;
+        padding: 9px 18px;
+        border-radius: 6px;
+        font-size: 13px;
+        cursor: pointer;
+      }
+      button:disabled {
+        opacity: 0.4;
+        cursor: default;
+      }
+      p {
+        color: #444;
+        font-size: 11px;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="c" width="390" height="390"></canvas>
+    <div class="btns">
+      <button id="mp4">Save .mp4</button>
+      <button id="gif">Save .gif</button>
+    </div>
+    <p>open in browser · save · drop into chat</p>
+
+    <script>
+      (function (g) {
+        const GIFEncoder = function (w, h) {
+          this.w = w;
+          this.h = h;
+          this.frames = [];
+        };
+        GIFEncoder.prototype.addFrame = function (d, t) {
+          this.frames.push({ d, t });
+        };
+        GIFEncoder.prototype.encode = function () {
+          const o = [];
+          o.push(71, 73, 70, 56, 57, 97);
+          p16(o, this.w);
+          p16(o, this.h);
+          o.push(0, 0, 0);
+          o.push(0x21, 0xff, 0x0b);
+          for (const c of [78, 69, 84, 83, 67, 65, 80, 69, 50, 46, 48])
+            o.push(c);
+          o.push(3, 1, 0, 0, 0);
+          for (const f of this.frames) {
+            const { pixels: px, palette: pal } = quant(f.d, this.w, this.h);
+            const cb = pb(pal.length);
+            o.push(0x21, 0xf9, 4, 0);
+            p16(o, Math.round(f.t / 10));
+            o.push(0, 0);
+            o.push(0x2c);
+            p16(o, 0);
+            p16(o, 0);
+            p16(o, this.w);
+            p16(o, this.h);
+            o.push(0x80 | (cb - 1));
+            for (const [r, g, b] of pal) o.push(r, g, b);
+            for (let i = pal.length; i < 1 << cb; i++) o.push(0, 0, 0);
+            const lzw = enc(px, cb);
+            o.push(cb);
+            for (let i = 0; i < lzw.length; ) {
+              const n = Math.min(255, lzw.length - i);
+              o.push(n);
+              for (let j = 0; j < n; j++) o.push(lzw[i++]);
+            }
+            o.push(0);
+          }
+          o.push(0x3b);
+          return new Uint8Array(o);
+        };
+        function p16(a, v) {
+          a.push(v & 0xff, (v >> 8) & 0xff);
+        }
+        function pb(n) {
+          let b = 2;
+          while (1 << b < n) b++;
+          return b;
+        }
+        function quant(id, w, h) {
+          const d = id.data,
+            m = new Map(),
+            pal = [],
+            idx = new Uint8Array(w * h);
+          for (let i = 0; i < w * h; i++) {
+            const r = d[i * 4],
+              gv = d[i * 4 + 1],
+              b = d[i * 4 + 2];
+            const qr = (r >> 3) << 3,
+              qg = (gv >> 3) << 3,
+              qb = (b >> 3) << 3,
+              k = (qr << 16) | (qg << 8) | qb;
+            if (!m.has(k)) {
+              if (pal.length >= 255) {
+                let best = 0,
+                  bd = 1e9;
+                for (let p = 0; p < pal.length; p++) {
+                  const dr = pal[p][0] - r,
+                    dg = pal[p][1] - gv,
+                    db = pal[p][2] - b,
+                    dd = dr * dr + dg * dg + db * db;
+                  if (dd < bd) {
+                    bd = dd;
+                    best = p;
+                  }
+                }
+                idx[i] = best;
+                continue;
+              }
+              m.set(k, pal.length);
+              pal.push([qr, qg, qb]);
+            }
+            idx[i] = m.get(k);
+          }
+          return { pixels: idx, palette: pal };
+        }
+        function enc(px, mb) {
+          const cl = 1 << mb,
+            ei = cl + 1;
+          let cs = mb + 1;
+          const t = new Map(),
+            init = () => {
+              t.clear();
+              for (let i = 0; i < cl; i++) t.set(String.fromCharCode(i), i);
+              t.set('C', cl);
+              t.set('E', ei);
+            };
+          init();
+          let nc = ei + 1;
+          const out = [],
+            emit = v => {
+              let buf = 0,
+                bits = 0; /* inline */
+            };
+          // proper bit packing
+          let buf = 0,
+            bits = 0;
+          const emt = v => {
+            buf |= v << bits;
+            bits += cs;
+            while (bits >= 8) {
+              out.push(buf & 0xff);
+              buf >>= 8;
+              bits -= 8;
+            }
+          };
+          emt(cl);
+          let s = String.fromCharCode(px[0]);
+          for (let i = 1; i < px.length; i++) {
+            const ch = String.fromCharCode(px[i]),
+              sc = s + ch;
+            if (t.has(sc)) {
+              s = sc;
+            } else {
+              emt(t.get(s));
+              if (nc <= 4095) {
+                t.set(sc, nc++);
+                if (nc > 1 << cs && cs < 12) cs++;
+              } else {
+                emt(cl);
+                init();
+                nc = ei + 1;
+                cs = mb + 1;
+              }
+              s = ch;
+            }
+          }
+          emt(t.get(s));
+          emt(ei);
+          if (bits > 0) out.push(buf & 0xff);
+          return out;
+        }
+        g.GIFEncoder = GIFEncoder;
+      })(window);
+
+      // ── draw ─────────────────────────────────────────────────────────────────────
+      const cv = document.getElementById('c'),
+        ctx = cv.getContext('2d');
+      const W = 390,
+        H = 390,
+        CX = 195,
+        CY = 195;
+
+      // frozen "video frame" background — static blurry dark scene
+      const bg = document.createElement('canvas');
+      bg.width = W;
+      bg.height = H;
+      const bx = bg.getContext('2d');
+      bx.fillStyle = '#1a1a1a';
+      bx.fillRect(0, 0, W, H);
+      // faint shapes like a frozen frame
+      bx.filter = 'blur(28px)';
+      [
+        [80, 140, 100, 'rgba(60,50,40,0.9)'],
+        [280, 200, 90, 'rgba(30,35,55,0.8)'],
+        [160, 300, 70, 'rgba(45,40,35,0.7)'],
+      ].forEach(([x, y, r, c]) => {
+        bx.fillStyle = c;
+        bx.beginPath();
+        bx.arc(x, y, r, 0, Math.PI * 2);
+        bx.fill();
+      });
+      bx.filter = 'none';
+      // grain texture
+      for (let i = 0; i < 4000; i++) {
+        const gx = Math.random() * W,
+          gy = Math.random() * H;
+        bx.fillStyle = `rgba(255,255,255,${Math.random() * 0.03})`;
+        bx.fillRect(gx, gy, 1, 1);
+      }
+
+      // spinner state — with occasional stutter to look like struggling
+      let spinAngle = 0;
+      let lastT = 0;
+      let stutterUntil = 0;
+
+      function draw(t) {
+        const dt = Math.min(t - lastT, 0.1);
+        lastT = t;
+
+        // stutter logic: every ~1.8s, pause briefly
+        const cycle = 1.8;
+        const phase = (t % cycle) / cycle;
+        let speed;
+        if (phase > 0.72 && phase < 0.82) {
+          // slow crawl during stutter
+          speed = 0.4;
+          stutterUntil = t + 0.1;
+        } else {
+          speed = 5.5;
+        }
+        spinAngle += speed * dt;
+
+        ctx.drawImage(bg, 0, 0);
+
+        // very slight darkening pulse when stuttering
+        if (t < stutterUntil + 0.05) {
+          ctx.fillStyle = 'rgba(0,0,0,0.18)';
+          ctx.fillRect(0, 0, W, H);
+        }
+
+        const R = 28,
+          SW = 2.8;
+        const sweep = Math.PI * 1.6; // 288° arc
+
+        // track
+        ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+        ctx.lineWidth = SW;
+        ctx.lineCap = 'butt';
+        ctx.beginPath();
+        ctx.arc(CX, CY, R, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // arc
+        ctx.strokeStyle = 'rgba(255,255,255,0.92)';
+        ctx.lineWidth = SW;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.arc(CX, CY, R, spinAngle, spinAngle + sweep);
+        ctx.stroke();
+      }
+
+      let t0 = null;
+      function loop(now) {
+        if (!t0) t0 = now;
+        draw((now - t0) / 1000);
+        requestAnimationFrame(loop);
+      }
+      requestAnimationFrame(loop);
+
+      // ── record ────────────────────────────────────────────────────────────────────
+      document.getElementById('mp4').onclick = function () {
+        const btn = this;
+        btn.disabled = true;
+        btn.textContent = 'Recording…';
+        t0 = performance.now();
+        spinAngle = 0;
+        lastT = 0;
+        const stream = cv.captureStream(60),
+          chunks = [];
+        const mime = MediaRecorder.isTypeSupported('video/mp4;codecs=avc1')
+          ? 'video/mp4;codecs=avc1'
+          : 'video/webm;codecs=vp9';
+        const mr = new MediaRecorder(stream, {
+          mimeType: mime,
+          videoBitsPerSecond: 3000000,
+        });
+        mr.ondataavailable = e => chunks.push(e.data);
+        mr.onstop = () => {
+          dl(new Blob(chunks, { type: mime }), 'loading.mp4');
+          btn.disabled = false;
+          btn.textContent = 'Save .mp4';
+        };
+        mr.start();
+        setTimeout(() => mr.stop(), 4000);
+      };
+
+      document.getElementById('gif').onclick = async function () {
+        const btn = this;
+        btn.disabled = true;
+        const FPS = 20,
+          DUR = 4,
+          FRAMES = FPS * DUR,
+          delay = Math.round(1000 / FPS);
+        const enc = new GIFEncoder(W, H);
+        spinAngle = 0;
+        lastT = 0;
+        for (let i = 0; i < FRAMES; i++) {
+          btn.textContent = `Encoding ${Math.round((i / FRAMES) * 100)}%`;
+          draw(i / FPS);
+          enc.addFrame(ctx.getImageData(0, 0, W, H), delay);
+          await new Promise(r => setTimeout(r, 0));
+        }
+        btn.textContent = 'Building…';
+        await new Promise(r => setTimeout(r, 0));
+        dl(new Blob([enc.encode()], { type: 'image/gif' }), 'loading.gif');
+        btn.disabled = false;
+        btn.textContent = 'Save .gif';
+        t0 = performance.now();
+        spinAngle = 0;
+        lastT = 0;
+      };
+
+      function dl(blob, name) {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = name;
+        a.click();
+      }
+    </script>
+  </body>
+</html>
